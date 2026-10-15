@@ -56,15 +56,17 @@ dialog.sl-drawer::backdrop { background: rgba(46, 15, 56, .45); }
 .landing-lift { transition: transform .15s; }
 .landing-lift:hover { transform: translateY(-2px); }
 @media (max-width: 1279px) {
-  .landing-widgets { display: none; }
-  .landing-stage { height: auto !important; padding: 0 20px; margin-top: 50px !important; }
-  .landing-mock { position: relative !important; left: auto !important; top: auto !important; margin: 0 auto !important; width: auto !important; max-width: 920px; }
   .landing-hero-text { margin-left: 0 !important; }
+  .landing-hero > svg { display: none; }
   .landing-h1 { font-size: clamp(44px, 8vw, 92px) !important; }
+}
+@media (max-width: 959px) {
+  .landing-widgets { display: none; }
+  .landing-stage { height: auto !important; padding: 0 20px; margin-top: 50px !important; zoom: 1 !important; }
+  .landing-mock { position: relative !important; left: auto !important; top: auto !important; margin: 0 auto !important; width: auto !important; max-width: 920px; }
 }
 @media (max-width: 760px) {
   .landing-header, .landing-hero, .landing-how { padding-left: 20px !important; padding-right: 20px !important; }
   .landing-nav, .landing-mock-nav { display: none !important; }
   .landing-mock-grid { grid-template-columns: 1fr !important; padding: 14px !important; }
-  .landing-hero svg { display: none; }
 }

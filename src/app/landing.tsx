@@ -4,9 +4,9 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { Icon } from '@/components/icon';
 
 // The public landing page: a dashboard mockup surrounded by small widgets visitors can play with.
-// Nothing here touches real data. On narrow screens the floating widgets are hidden (see .landing-* in globals.css).
+// Nothing here touches real data. On laptops the playground shrinks to fit; on tablets and phones the floating widgets are hidden (see .landing-* in globals.css).
 
-const STAR = 'M15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5';
+const STAR = '15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5';
 const Star = ({ size, fill, style }: { size: number; fill: string; style?: CSSProperties }) => (
   <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden="true" style={style}><polygon points={STAR} fill={fill} /></svg>
 );
@@ -50,6 +50,15 @@ export function Landing() {
     return () => cancelAnimationFrame(raf);
   }, []);
   useEffect(() => { if (!sent) return; const t = setTimeout(() => setSent(false), 2400); return () => clearTimeout(t); }, [sent]);
+
+  // The playground is laid out for a 1440px-wide window. On smaller laptop screens, shrink it to fit.
+  const [fit, setFit] = useState(1);
+  useEffect(() => {
+    const size = () => setFit(Math.min(1, window.innerWidth / 1440));
+    size();
+    window.addEventListener('resize', size);
+    return () => window.removeEventListener('resize', size);
+  }, []);
 
   const lvl = stock < 10 ? 'crit' : stock < 30 ? 'low' : 'ok';
   const col = { ok: '#4d7b93', low: '#b45dbb', crit: '#9b1d4a' } as const;
@@ -107,7 +116,7 @@ export function Landing() {
         </section>
 
         {/* dashboard mockup + playground */}
-        <section aria-label="What Supplock looks like" className="landing-stage" style={{ position: 'relative', maxWidth: 1440, height: 900, margin: '70px auto 0' }}>
+        <section aria-label="What Supplock looks like" className="landing-stage" style={{ position: 'relative', maxWidth: 1440, height: 900, margin: '120px auto 0', zoom: fit < 1 ? fit : undefined }}>
           <div className="landing-mock" style={{ position: 'absolute', left: '50%', top: 70, width: 920, marginLeft: -460, background: '#fff', borderRadius: 34, boxShadow: '0 10px 0 #ddd0e4,0 40px 80px rgba(46,15,56,.16)', overflow: 'hidden', border: '2px solid #2e0f38' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', background: '#1a2c54', color: '#f6f1f8', gap: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Star size={18} fill="#d9b3dd" /><span style={{ fontFamily: 'var(--font-serif)', fontSize: 17 }}>Supplock</span></div>
@@ -245,7 +254,7 @@ export function Landing() {
               </div>
             </Float>
 
-            <Float i={6} at={{ left: 'calc(50% + 560px)', top: 560 }} z={2}>
+            <Float i={6} at={{ left: 'calc(50% + 505px)', top: 560 }} z={2}>
               <div className="landing-card" style={{ ...card('#e6dbef', '#c2abd4', -10, { color: '#2e0f38', padding: '18px 20px', width: 200 }), boxShadow: '0 8px 0 #c2abd4,0 18px 30px rgba(46,15,56,.18)' }}>
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 700 }}>Classroom
                   <input value={classroom} onChange={e => setClassroom(e.target.value)} style={{ display: 'block', marginTop: 8, width: '100%', height: 48, border: '2px solid #8351a8', borderRadius: 14, padding: '0 12px', fontSize: 16, color: '#2e0f38', background: '#fff' }} />
