@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Caveat:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#f6f1f8;color:#2e0f38;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8351a8}
+a:hover{color:#2e0f38}
+input,select{font:inherit;color:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #b45dbb;outline-offset:2px}
+</style>
+<script src="./icons.js"></script>
+</helmet>
+<div data-screen-label="Transaction log" style="min-height:100vh">
+  <header style="background:#1a2c54;color:#f6f1f8">
+    <div style="max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <a href="Supplock Landing.dc.html" style="display:flex;align-items:center;gap:8px;color:#f6f1f8;text-decoration:none"><svg width="22" height="22" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#d9b3dd"></polygon></svg><span style="font-family:'Young Serif',serif;font-size:20px">Supplock</span></a>
+      <nav style="display:flex;gap:2px;flex-wrap:wrap">
+        <a href="Supplock Admin.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Dashboard</a>
+        <a href="Supplock Inventory.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Inventory</a>
+        <a href="Supplock Laptops.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Laptops</a>
+        <a href="Supplock Spaces.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Spaces</a>
+        <a href="Supplock Gazette.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">To-do · Gazette</a>
+        <a href="Supplock Log.dc.html" style="padding:10px 14px;border-radius:999px;background:#f6f1f8;color:#1a2c54;font-weight:700;font-size:15px;text-decoration:none">Log</a>
+      </nav>
+      <span style="margin-left:auto;font-weight:700;font-size:15px">J. Ruiz · Admin</span>
+    </div>
+  </header>
+  <main style="max-width:1240px;margin:0 auto;padding:26px 20px 80px">
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+      <h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:38px;margin:0">Transaction log</h1>
+      <span style="font-family:'Caveat',cursive;font-size:24px;color:#8351a8">who took the last of the markers? it's in here.</span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search teacher or item" aria-label="Search" style="flex:1 1 220px;height:46px;border:2px solid #e6dbef;border-radius:14px;padding:0 14px;background:#fff;font-size:15px"></input>
+      <select value="{{ teacher }}" onChange="{{ setTeacher }}" aria-label="Teacher" style="height:46px;border:2px solid #e6dbef;border-radius:14px;padding:0 12px;background:#fff;font-size:15px">
+        <sc-for list="{{ teachers }}" as="t" hint-placeholder-count="4"><option value="{{ t }}">{{ t }}</option></sc-for>
+      </select>
+      <select value="{{ action }}" onChange="{{ setAction }}" aria-label="Action type" style="height:46px;border:2px solid #e6dbef;border-radius:14px;padding:0 12px;background:#fff;font-size:15px">
+        <sc-for list="{{ actions }}" as="a" hint-placeholder-count="4"><option value="{{ a }}">{{ a }}</option></sc-for>
+      </select>
+      <input type="date" value="{{ from }}" onChange="{{ setFrom }}" aria-label="From date" style="height:46px;border:2px solid #e6dbef;border-radius:14px;padding:0 10px;background:#fff;font-family:'JetBrains Mono',monospace;font-size:13px"></input>
+      <input type="date" value="{{ to }}" onChange="{{ setTo }}" aria-label="To date" style="height:46px;border:2px solid #e6dbef;border-radius:14px;padding:0 10px;background:#fff;font-family:'JetBrains Mono',monospace;font-size:13px"></input>
+      <button onClick="{{ clear }}" style="min-height:46px;padding:0 14px;border:none;background:none;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:#5c4766">Clear</button>
+    </div>
+    <div style="font-size:14px;color:#5c4766;margin-bottom:8px">{{ countLine }}</div>
+    <div style="background:#fff;border-radius:24px;border:2px solid #e6dbef;overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:860px">
+        <thead><tr style="text-align:left;color:#5c4766;font-size:12px;text-transform:uppercase;letter-spacing:.06em">
+          <th style="padding:14px 16px">Date / time</th><th style="padding:14px 8px">Action</th><th style="padding:14px 8px">Teacher</th><th style="padding:14px 8px">Item</th><th style="padding:14px 8px">Qty</th><th style="padding:14px 8px">Classroom</th><th style="padding:14px 16px">Resulting stock / note</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+            <tr style="border-top:1px solid #efe7f3">
+              <td style="padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;white-space:nowrap">{{ r.when }}</td>
+              <td style="padding:10px 8px"><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:8px;white-space:nowrap;color:{{ r.fg }};background:{{ r.bg }}">{{ r.action }}</span></td>
+              <td style="padding:10px 8px">{{ r.teacher }}</td>
+              <td style="padding:8px 8px;font-weight:500"><div style="display:flex;align-items:center;gap:8px"><sl-icon label="{{ r.item }}" size="40"></sl-icon><span>{{ r.item }}</span></div></td>
+              <td style="padding:10px 8px;font-family:'JetBrains Mono',monospace;font-weight:700">{{ r.qty }}</td>
+              <td style="padding:10px 8px">{{ r.room }}</td>
+              <td style="padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:13px">{{ r.result }}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;font-family:'Caveat',cursive;font-size:26px;color:#8351a8">nothing matches those filters</div></sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COL = { Requested: ['#1a2c54', '#dde2ee'], Approved: ['#fff', '#4d7b93'], Denied: ['#fff', '#5c4766'], Deducted: ['#fff', '#8351a8'], Adjustment: ['#2e0f38', '#e6dbef'], 'Reorder placed': ['#fff', '#1a2c54'], Received: ['#fff', '#2f4f60'], 'Laptop checkout': ['#6e2c74', '#f1dff3'], 'Laptop assigned': ['#6e2c74', '#f1dff3'], 'Laptop return': ['#2f4f60', '#dce8ee'], 'Item added': ['#2e0f38', '#e6dbef'], 'Item removed': ['#fff', '#8c1c45'], 'Space created': ['#fff', '#5e3680'], 'Space item': ['#2e0f38', '#f1dff3'], 'Space adjustment': ['#2e0f38', '#e6dbef'], 'Space count': ['#fff', '#1a2c54'], 'Placed in space': ['#fff', '#4d7b93'] };
+class Component extends DCLogic {
+  state = { q: '', teacher: 'All teachers', action: 'All actions', from: '', to: '' };
+  componentDidMount() { import(new URL('./store.js', location.href).href).then(m => { this.S = m; if (!m.me() || m.me().role !== 'admin') m.login('admin'); this.un = m.subscribe(() => this.forceUpdate()); this.forceUpdate(); }); }
+  componentWillUnmount() { this.un && this.un(); }
+  renderVals() {
+    const S = this.S, st = this.state; const db = S ? S.get() : null;
+    const log = db ? [...db.log].sort((a, b) => b.ts - a.ts) : [];
+    const day = ts => new Date(ts - new Date(ts).getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    const rows = log.filter(e => (st.teacher === 'All teachers' || e.teacher === st.teacher) && (st.action === 'All actions' || e.action === st.action)
+      && (!st.q || (e.teacher + ' ' + e.item).toLowerCase().includes(st.q.toLowerCase())) && (!st.from || day(e.ts) >= st.from) && (!st.to || day(e.ts) <= st.to))
+      .map(e => { const c = COL[e.action] || ['#2e0f38', '#e6dbef']; return { ...e, when: S.fmtStamp(e.ts), teacher: e.teacher || '—', room: e.room || '—', qty: e.qty === '' ? '—' : (typeof e.qty === 'number' && e.qty > 0 && e.action === 'Adjustment' ? '+' + e.qty : e.qty), fg: c[0], bg: c[1] }; });
+    const set = k => e => this.setState({ [k]: e.target.value });
+    return {
+      ...st, rows, empty: !!db && rows.length === 0, countLine: `${rows.length} of ${log.length} events · most recent first`,
+      teachers: ['All teachers', ...(db ? db.users.filter(u => u.role === 'teacher').map(u => u.name) : [])],
+      actions: ['All actions', ...Object.keys(COL)],
+      setQ: set('q'), setTeacher: set('teacher'), setAction: set('action'), setFrom: set('from'), setTo: set('to'),
+      clear: () => this.setState({ q: '', teacher: 'All teachers', action: 'All actions', from: '', to: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

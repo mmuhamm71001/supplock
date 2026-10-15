@@ -1,0 +1,51 @@
+/* Supplock design tokens (see design_handoff_supplock/README.md). */
+:root {
+  --ink: #2e0f38;
+  --navy: #1a2c54;
+  --purple: #8351a8;
+  --purple-edge: #5e3680;
+  --teal: #4d7b93;
+  --teal-edge: #335a6e;
+  --orchid: #b45dbb;
+  --berry: #8c1c45;
+  --bg: #f6f1f8;
+  --lavender: #e6dbef;
+  --pink: #f1dff3;
+  --mist: #dce8ee;
+  --blue-tint: #dde2ee;
+  --lilac: #efe7f3;
+  --muted: #5c4766;
+  --muted-2: #3d2547;
+  --font-serif: var(--font-young-serif), Georgia, serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-hand: var(--font-caveat), cursive;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--purple); }
+a:hover { color: var(--ink); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--orchid);
+  outline-offset: 2px;
+}
+button { font: inherit; }
+@media (max-width: 1180px) { [data-wide] { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Popups: native <dialog> keeps keyboard focus inside and closes on Esc. */
+dialog.sl-modal { border: none; padding: 0; background: transparent; width: calc(100% - 40px); max-width: 440px; max-height: calc(100vh - 40px); overflow: auto; color: inherit; }
+dialog.sl-modal::backdrop { background: rgba(46, 15, 56, .45); }
+/* Side panel: same as a popup, docked to the right. */
+dialog.sl-drawer { border: none; padding: 0; margin: 0 0 0 auto; width: 100%; max-width: 440px; height: 100vh; max-height: 100vh; overflow: auto; color: inherit; background: #fff; }
+dialog.sl-drawer::backdrop { background: rgba(46, 15, 56, .45); }
+/* The Gazette's wide newspaper margins shrink on phones. */
+@media (max-width: 700px) { .gazette { padding: 24px 18px !important; } }

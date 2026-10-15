@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#d9cfe0;color:#2e0f38;font-family:'Old Standard TT',serif;-webkit-font-smoothing:antialiased}
+a{color:#2e0f38;text-decoration:underline;text-decoration-color:#b45dbb;text-underline-offset:3px}
+a:hover{color:#8351a8}
+input{font:inherit;color:inherit}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #b45dbb;outline-offset:2px}
+</style>
+<script src="./icons.js"></script>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="4" result="noise"></feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" result="rough"></feDisplacementMap>
+    <feTurbulence type="fractalNoise" baseFrequency="2.6" numOctaves="1" seed="9" result="specks"></feTurbulence>
+    <feColorMatrix in="specks" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.2 0 0 0 2.15" result="mask"></feColorMatrix>
+    <feComposite in="rough" in2="mask" operator="in"></feComposite>
+  </filter>
+</svg>
+
+<div style="padding:20px 20px 60px">
+<nav style="max-width:1180px;margin:0 auto 16px;display:flex;gap:18px;flex-wrap:wrap;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700"><a href="Supplock Admin.dc.html" style="text-decoration:none;padding:10px 0">← Dashboard</a><a href="Supplock Inventory.dc.html" style="text-decoration:none;padding:10px 0">Inventory</a><a href="Supplock Laptops.dc.html" style="text-decoration:none;padding:10px 0">Laptops</a><a href="Supplock Spaces.dc.html" style="text-decoration:none;padding:10px 0">Spaces</a><a href="Supplock Log.dc.html" style="text-decoration:none;padding:10px 0">Log</a></nav>
+<div data-screen-label="Gazette" style="position:relative;container-type:inline-size;max-width:1180px;margin:0 auto;padding:44px 52px 40px;border-radius:20px;background-color:#efe6d6;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .012' numOctaves='3' seed='3'/%3E%3CfeDiffuseLighting lighting-color='%23f4ecdf' surfaceScale='2.2'%3E%3CfeDistantLight azimuth='45' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)' opacity='.55'/%3E%3C/svg%3E&quot;),url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .06 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);background-blend-mode:multiply;box-shadow:inset 0 0 140px rgba(78,40,70,.28),inset 0 0 30px rgba(78,40,70,.12),0 30px 60px rgba(46,15,56,.25),0 4px 10px rgba(46,15,56,.15)">
+
+  <!-- masthead -->
+  <sc-if value="{{ isExtra }}" hint-placeholder-val="{{ true }}">
+    <div style="font-family:'Anton',sans-serif;font-size:min(164px,14.6cqw);white-space:nowrap;line-height:.92;text-align:center;letter-spacing:.01em;filter:url(#ink);margin-top:-6px">EXTRA!! EXTRA!!</div>
+  </sc-if>
+  <sc-if value="{{ notExtra }}" hint-placeholder-val="{{ false }}">
+    <div style="font-family:'Anton',sans-serif;font-size:min(122px,10.6cqw);white-space:nowrap;line-height:.95;text-align:center;letter-spacing:.005em;filter:url(#ink)">THE SUPPLOCK GAZETTE</div>
+  </sc-if>
+  <div style="height:15px;border-top:2px solid #2e0f38;border-bottom:2px solid #2e0f38;display:flex;align-items:center;margin-top:16px"><div style="height:6px;width:100%;background:#2e0f38"></div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;font-family:'Old Standard TT',serif;font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">
+    <span>Vol. 1, No. {{ issue }}</span>
+    <span>{{ dateline }}</span>
+    <span>School Edition · Price: free</span>
+  </div>
+  <div style="height:8px;border-top:5px solid #2e0f38;border-bottom:2px solid #2e0f38"></div>
+  <div style="font-family:'Anton',sans-serif;font-size:min(60px,6cqw);line-height:1.05;text-align:center;text-transform:uppercase;padding:14px 0 12px;text-wrap:balance">{{ subhead }}</div>
+  <div style="height:8px;border-top:2px solid #2e0f38;border-bottom:5px solid #2e0f38"></div>
+
+  <!-- lead story -->
+  <div style="overflow:hidden;border-bottom:2px solid #2e0f38"><div style="display:flex;flex-wrap:wrap;margin:-2px -26px 0 -28px">
+    <div style="flex:2 1 520px;padding:22px 26px;border-left:2px solid #2e0f38;border-top:2px solid #2e0f38">
+      <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8a3f90">Lead story · {{ lead.kicker }}</div>
+      <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:46px;line-height:1;margin:6px 0 16px;text-transform:uppercase;text-wrap:balance">{{ lead.headline }}</h2>
+      <div style="position:relative;border:2px solid #2e0f38;padding:34px 18px 26px;background:rgba(46,15,56,.05)">
+        <sc-if value="{{ lead.isPoster }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;max-width:440px;margin:0 auto;transform:rotate(-1.5deg)">
+            <div aria-hidden="true" style="position:absolute;top:-15px;left:50%;margin-left:-55px;width:110px;height:28px;background:rgba(214,196,226,.78);transform:rotate(3deg);z-index:2;box-shadow:0 1px 2px rgba(46,15,56,.12)"></div>
+            <div style="background-color:#f4ebda;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .06 0 0 0 0 .22 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);padding:12px;box-shadow:0 10px 22px rgba(46,15,56,.22),0 2px 4px rgba(46,15,56,.12)">
+              <div style="position:relative;border:4px double #2e0f38;padding:18px 18px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px">
+                <span aria-hidden="true" style="position:absolute;top:4px;left:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;top:4px;right:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;bottom:4px;left:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;bottom:4px;right:6px;font-size:14px;line-height:1">✦</span>
+                <sc-if value="{{ lead.titleBig }}" hint-placeholder-val="{{ true }}"><div style="font-family:'Anton',sans-serif;font-size:84px;line-height:.92;letter-spacing:.02em;filter:url(#ink)">{{ lead.title }}</div></sc-if>
+                <sc-if value="{{ lead.titleLong }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Anton',sans-serif;font-size:46px;line-height:1;letter-spacing:.01em;filter:url(#ink);text-wrap:balance;text-transform:uppercase">{{ lead.title }}</div></sc-if>
+                <div style="width:72%;height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38"></div>
+                <sl-icon name="{{ lead.icon }}" label="{{ lead.label }}" size="220" variant="detail" tint="1"></sl-icon>
+                <sc-if value="{{ lead.only }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Playfair Display','Old Standard TT',serif;font-weight:900;font-size:26px;line-height:1.1">{{ lead.only }}</div></sc-if>
+                <sc-if value="{{ lead.line1 }}" hint-placeholder-val="{{ true }}"><div style="font-variant:small-caps;text-transform:lowercase;font-weight:700;font-size:16px;letter-spacing:.08em;line-height:1.3">{{ lead.line1 }}</div></sc-if>
+                <sc-if value="{{ lead.line2 }}" hint-placeholder-val="{{ false }}"><div style="font-variant:small-caps;text-transform:lowercase;font-weight:700;font-size:16px;letter-spacing:.08em;line-height:1.3">{{ lead.line2 }}</div></sc-if>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;line-height:1.4">{{ lead.details }}</div>
+                <div style="width:100%;height:5px;border-top:1px solid #2e0f38;border-bottom:2px solid #2e0f38;margin-top:4px"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;flex-wrap:wrap">
+                  <span style="font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.08em;text-align:left">REWARD: A FULLY STOCKED SHELF</span>
+                  <sc-if value="{{ lead.stampBig }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openOrder }}" style="border:4px double #b45dbb;border-radius:8px;background:transparent;color:#8a3f90;font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.12em;cursor:pointer;transform:rotate(-4deg);min-height:52px;padding:0 18px" style-hover="background:rgba(180,93,187,.12)">ORDER MORE</button></sc-if>
+                  <sc-if value="{{ lead.stampSmall }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openOrder }}" style="border:4px double #b45dbb;border-radius:8px;background:transparent;color:#8a3f90;font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.12em;cursor:pointer;transform:rotate(-4deg);min-height:44px;padding:0 12px" style-hover="background:rgba(180,93,187,.12)">ORDER MORE</button></sc-if>
+                  <sc-if value="{{ lead.onOrder }}" hint-placeholder-val="{{ false }}"><span style="border:4px double #4d7b93;border-radius:8px;color:#2f4f60;font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.12em;padding:6px 14px;transform:rotate(-4deg)">ON ORDER</span></sc-if>
+                </div>
+                <sc-if value="{{ orderOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="width:100%;border:1.5px solid #2e0f38;background:rgba(255,250,240,.7);padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:8px;margin-top:4px">
+                    <div style="font-size:16px;font-weight:700">{{ orderLine }}</div>
+                    <div style="font-size:14px">Check out on the vendor's site, then mark it ordered here.</div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                      <a href="{{ orderUrl }}" target="_blank" style="font-size:15px;font-weight:700;padding:10px 0">Open {{ orderVendor }} page ↗</a>
+                      <button onClick="{{ placeOrder }}" style="min-height:44px;padding:0 14px;border:2px solid #2e0f38;background:#2e0f38;color:#efe6d6;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer">Mark as ordered</button>
+                      <button onClick="{{ closeOrder }}" style="min-height:44px;padding:0 6px;border:none;background:none;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:#2e0f38">Cancel</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ lead.isAd }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;max-width:460px;margin:0 auto;transform:rotate(-1.5deg)">
+            <div aria-hidden="true" style="position:absolute;top:-15px;left:50%;margin-left:-55px;width:110px;height:28px;background:rgba(214,196,226,.78);transform:rotate(3deg);z-index:2;box-shadow:0 1px 2px rgba(46,15,56,.12)"></div>
+            <div style="background-color:#f4ebda;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .06 0 0 0 0 .22 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);padding:10px;box-shadow:0 10px 22px rgba(46,15,56,.22),0 2px 4px rgba(46,15,56,.12)">
+              <div style="position:relative;border:4px double #2e0f38;padding:16px 18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+                <span aria-hidden="true" style="position:absolute;top:4px;left:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;top:4px;right:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;bottom:4px;left:6px;font-size:14px;line-height:1">✦</span><span aria-hidden="true" style="position:absolute;bottom:4px;right:6px;font-size:14px;line-height:1">✦</span>
+                <sl-icon name="{{ lead.icon }}" label="{{ lead.label }}" size="150" variant="detail" tint="1"></sl-icon>
+                <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-family:'Anton',sans-serif;font-size:48px;line-height:.95;filter:url(#ink)">WANTED</div>
+                  <div style="font-size:19px;font-weight:700;line-height:1.25">{{ lead.adLine }}</div>
+                  <div style="font-variant:small-caps;text-transform:lowercase;font-weight:700;font-size:16px;letter-spacing:.08em;line-height:1.3">Needed by {{ lead.needed }}</div>
+                  <div style="font-size:14px">For {{ lead.teacher }}</div>
+                  <sc-if value="{{ lead.url }}" hint-placeholder-val="{{ false }}"><a href="{{ lead.url }}" target="_blank" style="font-size:14px;word-break:break-all">{{ lead.urlShort }}</a></sc-if>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ lead.isClear }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:4px 0">
+            <sl-icon name="shelf" size="180" variant="detail" tint="1"></sl-icon>
+            <div style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:.16em;color:#2f4f60;border:4px double #4d7b93;border-radius:6px;padding:4px 16px;transform:rotate(-3deg)">ALL CLEAR</div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="font-style:italic;font-size:15px;margin-top:10px;color:#4a2f55">{{ lead.caption }}</div>
+    </div>
+    <div style="flex:1 1 300px;border-left:2px solid #2e0f38;border-top:2px solid #2e0f38;padding:22px 26px;display:flex;flex-direction:column">
+      <p style="font-size:17px;line-height:1.5;text-align:justify;hyphens:auto;margin:0"><span style="float:left;font-family:'Anton',sans-serif;font-size:68px;line-height:.82;padding:6px 8px 0 0;color:#2e0f38">{{ lead.cap }}</span>{{ lead.body }}</p>
+      <div style="margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;border:2px solid #2e0f38;padding:8px 12px">{{ lead.stat }}</span>
+        <span style="font-family:'Caveat',cursive;font-size:24px;font-weight:700;color:#8a3f90;transform:rotate(-3deg)">{{ lead.note }}</span>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- three columns -->
+  <div style="overflow:hidden;border-bottom:2px solid #2e0f38"><div style="display:flex;flex-wrap:wrap;margin:-1.5px -24px 0 -25.5px">
+
+    <!-- col A: to-do -->
+    <div style="flex:1.15 1 320px;padding:22px 24px 26px;border-left:1.5px solid #2e0f38;border-top:1.5px solid #2e0f38">
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:1;margin:0;text-transform:uppercase;letter-spacing:.01em">Today's To-Do</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 6px"></div>
+      <div style="font-style:italic;font-size:14px;margin-bottom:6px;color:#4a2f55">{{ openCount }} items on the docket · auto-filed items marked ✶</div>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ openTodos }}" as="t" hint-placeholder-count="5">
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px dashed #a48fae">
+            <button onClick="{{ t.toggle }}" aria-label="Mark done" style="flex:none;width:44px;height:44px;margin:-6px 0 -6px -8px;background:none;border:none;cursor:pointer;display:grid;place-items:center;padding:0">
+              <span style="width:24px;height:24px;border:2.5px solid #2e0f38;border-radius:4px 7px 3px 8px / 7px 3px 8px 4px;transform:rotate(-3deg);filter:url(#ink);display:block"></span>
+            </button>
+            <div style="flex:1;min-width:0">
+              <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px">
+                  <input value="{{ editText }}" onChange="{{ setEditText }}" onKeyDown="{{ editKey }}" aria-label="Edit task" style="flex:1;min-width:0;height:40px;border:none;border-bottom:2px solid #2e0f38;background:transparent;font-size:17px"></input>
+                  <button onClick="{{ saveEdit }}" style="height:40px;padding:0 12px;border:2px solid #2e0f38;background:#2e0f38;color:#efe6d6;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Save</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ t.notEditing }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:flex-start;gap:8px;font-size:17px;line-height:1.3"><sc-if value="{{ t.hasIcon }}" hint-placeholder-val="{{ false }}"><sl-icon name="{{ t.iconName }}" size="40" mono="1" style="margin:-8px 0 -6px"></sl-icon></sc-if><span>{{ t.star }}{{ t.text }}</span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;margin-top:3px;color:#4a2f55">
+                  <sc-if value="{{ t.hasDue }}" hint-placeholder-val="{{ false }}"><span>Needed by {{ t.dueFmt }}</span></sc-if>
+                  <sc-if value="{{ t.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ t.link }}" target="_blank">product link</a></sc-if>
+                  <button onClick="{{ t.edit }}" style="background:none;border:none;padding:0;font:inherit;color:#4a2f55;text-decoration:underline;cursor:pointer">edit</button>
+                  <button onClick="{{ t.remove }}" style="background:none;border:none;padding:0;font:inherit;color:#4a2f55;text-decoration:underline;cursor:pointer">delete</button>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <form onSubmit="{{ addTodo }}" style="margin-top:18px;border:2px solid #2e0f38;padding:12px 14px;background:rgba(255,250,240,.45)">
+        <div style="font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.12em;text-transform:uppercase;text-align:center;border-bottom:1px solid #2e0f38;padding-bottom:6px;margin-bottom:8px">Classified · Place a notice</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input value="{{ draft }}" onChange="{{ setDraft }}" placeholder="e.g. Call Sam's Club about bulk pricing" aria-label="New task" style="flex:1;min-width:0;height:44px;border:none;border-bottom:1.5px dotted #2e0f38;background:transparent;font-size:17px;font-style:italic"></input>
+          <button type="submit" style="height:44px;padding:0 16px;border:3px solid #8a3f90;border-radius:6px;background:transparent;color:#8a3f90;font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transform:rotate(-2deg)">Run it</button>
+        </div>
+      </form>
+
+      <button onClick="{{ toggleDone }}" style="margin-top:16px;min-height:44px;background:none;border:none;padding:0;cursor:pointer;font-family:'Old Standard TT',serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2e0f38;display:flex;align-items:center;gap:8px">{{ doneArrow }} Done ({{ doneCount }})</button>
+      <sc-if value="{{ showDone }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ doneTodos }}" as="t" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:12px;min-height:40px">
+            <button onClick="{{ t.toggle }}" aria-label="Mark not done" style="flex:none;width:44px;height:44px;margin-left:-8px;background:none;border:none;cursor:pointer;display:grid;place-items:center;padding:0;position:relative">
+              <span style="width:24px;height:24px;border:2.5px solid #2e0f38;border-radius:4px 7px 3px 8px / 7px 3px 8px 4px;transform:rotate(-3deg);display:block"></span>
+              <span style="position:absolute;font-family:'Caveat',cursive;font-size:34px;font-weight:700;color:#8a3f90;top:-4px;left:12px">✓</span>
+            </button>
+            <span style="flex:1;font-size:16px;text-decoration:line-through;text-decoration-color:#8a3f90;text-decoration-thickness:2px;color:#5c4766">{{ t.text }}</span>
+            <button onClick="{{ t.remove }}" style="background:none;border:none;font:inherit;font-size:13px;color:#4a2f55;text-decoration:underline;cursor:pointer;min-height:44px">delete</button>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <div style="margin-top:26px;border:3px double #2e0f38;padding:20px 18px;text-align:center">
+        <div style="font-family:'Old Standard TT',serif;font-style:italic;font-weight:700;font-size:30px;line-height:1.15;text-wrap:balance">“Every marker, crayon and laptop — accounted for.”</div>
+        <div style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-top:10px">— The Supplock Desk</div>
+      </div>
+    </div>
+
+    <!-- col B: stop the presses + deliveries -->
+    <div style="flex:1 1 300px;border-left:1.5px solid #2e0f38;border-top:1.5px solid #2e0f38;padding:22px 24px 26px">
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:1;margin:0;text-transform:uppercase">Stop the Presses!</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 10px"></div>
+      <div style="font-style:italic;font-size:14px;color:#4a2f55;margin-bottom:4px">Low-stock bulletin. Links open your saved product pages; checkout stays with you.</div>
+      <sc-for list="{{ lowItems }}" as="it" hint-placeholder-count="4">
+        <div style="padding:12px 0;border-bottom:1px solid #2e0f38">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:19px"><sl-icon name="{{ it.iconName }}" label="{{ it.name }}" size="40" mono="1"></sl-icon>{{ it.name }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:2px 7px;color:{{ it.fg }};background:{{ it.bg }};white-space:nowrap">{{ it.level }}</span>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;margin:4px 0 6px">{{ it.qty }} {{ it.unit }} left · low at {{ it.th }}</div>
+          <div style="font-size:15px;line-height:1.4">{{ it.suggest }} from <a href="{{ it.url }}" target="_blank">{{ it.vendor }}</a></div>
+          <sc-if value="{{ it.onOrder }}" hint-placeholder-val="{{ false }}">
+            <div style="font-style:italic;font-size:14px;margin-top:6px;color:#2f4f60">On order · arrives {{ it.eta }}</div>
+          </sc-if>
+          <sc-if value="{{ it.canOrder }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ it.order }}" style="margin-top:8px;min-height:44px;padding:0 14px;border:2px solid #2e0f38;background:#2e0f38;color:#efe6d6;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer">Mark as ordered</button>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noLow }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'Caveat',cursive;font-size:26px;color:#2f4f60;padding:16px 0">Shelves are full. Nothing to report ★</div>
+      </sc-if>
+
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:28px;line-height:1;margin:30px 0 0;text-transform:uppercase">Deliveries Expected</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 4px"></div>
+      <sc-for list="{{ deliveries }}" as="d" hint-placeholder-count="2">
+        <div style="padding:12px 0;border-bottom:1px dashed #a48fae">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">
+            <span style="font-weight:700;font-size:17px">{{ d.title }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap">{{ d.eta }}</span>
+          </div>
+          <div style="font-size:14px;color:#4a2f55;margin-top:2px">{{ d.sub }}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap">
+            <sc-if value="{{ d.isReorder }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;border:2px solid #2e0f38">
+                <button onClick="{{ d.dec }}" aria-label="Fewer" style="width:40px;height:40px;border:none;background:transparent;font-size:20px;cursor:pointer;color:#2e0f38">−</button>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;min-width:28px;text-align:center">{{ d.packs }}</span>
+                <button onClick="{{ d.inc }}" aria-label="More" style="width:40px;height:40px;border:none;background:transparent;font-size:20px;cursor:pointer;color:#2e0f38">+</button>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px">= +{{ d.units }}</span>
+            </sc-if>
+            <button onClick="{{ d.receive }}" style="margin-left:auto;min-height:44px;padding:0 14px;border:3px solid #2f4f60;border-radius:6px;background:transparent;color:#2f4f60;font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transform:rotate(-2deg)">{{ d.cta }}</button>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noDeliveries }}" hint-placeholder-val="{{ false }}">
+        <div style="font-style:italic;font-size:15px;padding:12px 0">No packages on the way.</div>
+      </sc-if>
+    </div>
+
+    <!-- col C: pending + laptops -->
+    <div style="flex:1 1 300px;border-left:1.5px solid #2e0f38;border-top:1.5px solid #2e0f38;padding:22px 24px 26px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between">
+        <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:1;margin:0;text-transform:uppercase">Pending Requests</h3>
+        <span style="font-family:'Anton',sans-serif;font-size:40px;line-height:1;color:#8a3f90">{{ pendingCount }}</span>
+      </div>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 4px"></div>
+      <sc-for list="{{ pending }}" as="r" hint-placeholder-count="3">
+        <div style="padding:14px 0;border-bottom:1px solid #2e0f38">
+          <div style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a2f55">{{ r.teacher }}{{ r.roomStr }} · {{ r.at }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px">
+            <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;line-height:1.2"><sl-icon label="{{ r.title }}" size="40" mono="1"></sl-icon>{{ r.title }}</span>
+            <div style="display:flex;align-items:center;border:2px solid #2e0f38;flex:none">
+              <button onClick="{{ r.dec }}" aria-label="Decrease quantity" style="width:36px;height:40px;border:none;background:transparent;font-size:18px;cursor:pointer;color:#2e0f38">−</button>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;min-width:24px;text-align:center">{{ r.qty }}</span>
+              <button onClick="{{ r.inc }}" aria-label="Increase quantity" style="width:36px;height:40px;border:none;background:transparent;font-size:18px;cursor:pointer;color:#2e0f38">+</button>
+            </div>
+          </div>
+          <sc-if value="{{ r.sub }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;margin-top:3px">{{ r.sub }}</div></sc-if>
+          <sc-if value="{{ r.exceeds }}" hint-placeholder-val="{{ false }}">
+            <div style="display:inline-block;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;background:#8c1c45;padding:4px 8px">⚠ Exceeds available stock ({{ r.avail }} available)</div>
+          </sc-if>
+          <sc-if value="{{ r.note }}" hint-placeholder-val="{{ false }}"><div style="font-style:italic;font-size:14px;margin-top:5px">“{{ r.note }}”</div></sc-if>
+          <div style="display:flex;gap:14px;margin-top:12px">
+            <button onClick="{{ r.approve }}" style="flex:1;min-height:48px;border:4px double #8a3f90;border-radius:8px;background:transparent;color:#8a3f90;font-family:'Anton',sans-serif;font-size:19px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transform:rotate(-3deg)" style-hover="background:rgba(180,93,187,.12)">Approved</button>
+            <button onClick="{{ r.deny }}" style="flex:1;min-height:48px;border:4px double #8c1c45;border-radius:8px;background:transparent;color:#8c1c45;font-family:'Anton',sans-serif;font-size:19px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transform:rotate(2deg)" style-hover="background:rgba(140,28,69,.1)">Denied</button>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noPending }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'Caveat',cursive;font-size:26px;color:#2f4f60;padding:16px 0">Inbox zero. Go get a coffee ★</div>
+      </sc-if>
+
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:28px;line-height:1;margin:30px 0 0;text-transform:uppercase">Laptop Report</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 12px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border:1.5px solid #2e0f38">
+        <div style="padding:10px 12px;border-right:1.5px solid #2e0f38;border-bottom:1.5px solid #2e0f38"><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700">{{ lapAvail }}</div><div style="font-size:13px;text-transform:uppercase;letter-spacing:.1em">Available</div></div>
+        <div style="padding:10px 12px;border-bottom:1.5px solid #2e0f38"><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700">{{ lapOut }}</div><div style="font-size:13px;text-transform:uppercase;letter-spacing:.1em">Checked out</div></div>
+        <div style="padding:10px 12px;border-right:1.5px solid #2e0f38"><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700">{{ lapAssigned }}</div><div style="font-size:13px;text-transform:uppercase;letter-spacing:.1em">In classrooms</div></div>
+        <div style="padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700">{{ lapZoom }}</div><div style="font-size:13px;text-transform:uppercase;letter-spacing:.1em">Zoom installed</div></div>
+      </div>
+      <sc-if value="{{ hasOut }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ returnOne }}" style="margin-top:10px;min-height:44px;background:none;border:none;padding:0;font:inherit;font-size:15px;text-decoration:underline;text-decoration-color:#b45dbb;cursor:pointer;color:#2e0f38">Mark one checked-out laptop returned</button>
+      </sc-if>
+      <div style="font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:12px 0 4px">Assigned to classrooms</div>
+      <sc-for list="{{ assigned }}" as="a" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dotted #2e0f38;font-size:15px">
+          <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px">{{ a.tag }}</span>
+          <span style="flex:1">{{ a.room }} · {{ a.teacher }}</span>
+          <button onClick="{{ a.ret }}" style="min-height:40px;background:none;border:none;padding:0;font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;color:#4a2f55">returned</button>
+        </div>
+      </sc-for>
+    </div>
+  </div></div>
+
+  <!-- classifieds + wire -->
+  <div style="overflow:hidden"><div style="display:flex;flex-wrap:wrap;margin:-2px -26px 0 -28px">
+    <div style="flex:2 1 520px;padding:22px 26px 24px;border-left:2px solid #2e0f38;border-top:2px solid #2e0f38">
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:1;margin:0;text-transform:uppercase">Classifieds</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 12px"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+        <sc-for list="{{ customs }}" as="c" hint-placeholder-count="3">
+          <div style="border:1.5px solid #2e0f38;padding:12px 14px;display:flex;flex-direction:column;gap:5px">
+            <div style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-align:center;border-bottom:1px solid #2e0f38;padding-bottom:5px">Wanted · Custom request</div>
+            <div style="display:flex;align-items:center;gap:10px"><sl-icon label="{{ c.name }}" size="40" mono="1"></sl-icon><div style="font-weight:700;font-size:18px;line-height:1.2">{{ c.name }} <span style="font-family:'JetBrains Mono',monospace;font-size:14px">×{{ c.qty }}</span></div></div>
+            <div style="font-size:14px">For {{ c.teacher }}{{ c.roomStr }}. Needed by {{ c.neededFmt }}.</div>
+            <a href="{{ c.url }}" target="_blank" style="font-size:14px;word-break:break-all">{{ c.urlShort }}</a>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;align-self:flex-start;flex:none;line-height:1.35;padding:3px 8px;margin-top:2px;color:{{ c.fg }};background:{{ c.bg }}">{{ c.statusLabel }}</div>
+            <sc-if value="{{ c.isPending }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:10px;margin-top:6px">
+                <button onClick="{{ c.approve }}" style="flex:1;min-height:44px;border:4px double #8a3f90;border-radius:8px;background:transparent;color:#8a3f90;font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transform:rotate(-2deg)">Approved</button>
+                <button onClick="{{ c.deny }}" style="flex:1;min-height:44px;border:4px double #8c1c45;border-radius:8px;background:transparent;color:#8c1c45;font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transform:rotate(2deg)">Denied</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ c.isApproved }}" hint-placeholder-val="{{ false }}">
+              <label style="font-size:13px;margin-top:6px">Expected arrival</label>
+              <div style="display:flex;gap:8px">
+                <input type="date" value="{{ c.etaDraft }}" onChange="{{ c.setEta }}" aria-label="Expected arrival" style="flex:1;min-width:0;height:44px;border:1.5px solid #2e0f38;background:rgba(255,250,240,.6);padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:13px"></input>
+                <button onClick="{{ c.order }}" style="min-height:44px;padding:0 12px;border:2px solid #2e0f38;background:#2e0f38;color:#efe6d6;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Ordered</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="flex:1 1 300px;border-left:2px solid #2e0f38;border-top:2px solid #2e0f38;padding:22px 26px 24px">
+      <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:1;margin:0;text-transform:uppercase">The Latest Wire</h3>
+      <div style="height:5px;border-top:2px solid #2e0f38;border-bottom:1px solid #2e0f38;margin:8px 0 4px"></div>
+      <sc-for list="{{ wire }}" as="w" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:70px 1fr;gap:10px;padding:9px 0;border-bottom:1px dotted #2e0f38">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding-top:2px">{{ w.time }}</span>
+          <div>
+            <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a3f90">{{ w.action }}</div>
+            <div style="font-size:15px;line-height:1.35">{{ w.text }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a2f55">{{ w.result }}</div>
+          </div>
+        </div>
+      </sc-for>
+      <div style="font-family:'Caveat',cursive;font-size:22px;color:#8a3f90;margin-top:10px;transform:rotate(-2deg)">every move, on the record ↓</div>
+    </div>
+  </div></div>
+
+  <!-- footer -->
+  <div style="height:15px;border-top:2px solid #2e0f38;border-bottom:2px solid #2e0f38;display:flex;align-items:center"><div style="height:6px;width:100%;background:#2e0f38"></div></div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:28px;padding:14px 0;flex-wrap:wrap">
+    <span style="font-family:'Anton',sans-serif;font-size:40px;line-height:1;filter:url(#ink)" aria-hidden="true">✱</span>
+    <a href="Supplock Log.dc.html" style="font-family:'Anton',sans-serif;font-size:30px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#2e0f38">Full transaction log</a>
+    <span style="font-family:'Anton',sans-serif;font-size:30px">·</span>
+    <a href="Supplock Inventory.dc.html" style="font-family:'Anton',sans-serif;font-size:30px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#2e0f38">Inventory</a>
+    <span style="font-family:'Anton',sans-serif;font-size:40px;line-height:1;filter:url(#ink)" aria-hidden="true">✱</span>
+  </div>
+  <div style="height:8px;border-top:2px solid #2e0f38;border-bottom:5px solid #2e0f38"></div>
+</div>
+</div>
+
+<div role="status" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:20;display:{{ toastDisplay }};background:#2e0f38;color:#f6f1f8;padding:14px 22px;border-radius:14px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;box-shadow:0 6px 0 #1a0621,0 14px 30px rgba(46,15,56,.3);max-width:90vw">{{ toast }}</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;banner&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;extra&quot;,&quot;normal&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'extra'|'normal'&quot;}}">
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+class Component extends DCLogic {
+  state = { draft: '', editId: null, editText: '', showDone: false, etaDrafts: {}, toast: '', orderOpen: false };
+  componentDidMount() { import(new URL('./store.js', location.href).href).then(m => { this.S = m; if (!m.me() || m.me().role !== 'admin') m.login('admin'); this.un = m.subscribe(() => this.forceUpdate()); this.forceUpdate(); }); }
+  componentWillUnmount() { this.un && this.un(); clearTimeout(this.tt); }
+  say(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: '' }), 3200); }
+  lead(db) {
+    const S = this.S;
+    const lastSeen = it => db.log.filter(e => e.item === it.name && (e.action === 'Deducted' || (e.action === 'Adjustment' && Number(e.qty) < 0))).sort((x, y) => y.ts - x.ts)[0];
+    const onOrder = it => db.reorders.find(o => o.itemId === it.id && o.status === 'ordered');
+    const when = ts => { const d = new Date(ts); return new Date().toDateString() === d.toDateString() ? (d.getHours() < 12 ? 'this morning' : 'this afternoon') : 'on ' + S.fmtDate(new Date(ts - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10)); };
+    const poster = (it, mode, extra) => {
+      const ls = lastSeen(it), oo = onOrder(it), arriving = !!oo && mode !== 'exceeds';
+      const title = arriving ? 'ARRIVING SOON' : mode === 'out' ? 'WANTED' : mode === 'low' ? 'MISSING?' : 'WANTED: ' + it.name;
+      return {
+        isPoster: true, itemId: it.id, icon: it.icon || '', label: it.name, title, titleBig: title.length <= 13, titleLong: title.length > 13,
+        only: arriving ? 'Expected ' + S.fmtDate(oo.eta) : mode === 'low' ? 'Only ' + it.qty + ' left' : mode === 'exceeds' ? extra : '',
+        line1: 'Last seen: ' + (ls ? S.fmtStamp(ls.ts) : 'not on record'), line2: ls && ls.room ? 'Last known whereabouts: ' + [ls.teacher, ls.room].filter(Boolean).join(', ') : '',
+        details: 'Usual stock: ' + it.th * 2 + ' ' + it.unit + ' · Now: ' + it.qty + ' · Comes in: 1 ' + it.pk + ' = ' + it.pn + ' ' + it.unit,
+        stampBig: !arriving && mode !== 'low', stampSmall: !arriving && mode === 'low', onOrder: arriving,
+        caption: it.name + ', last seen ' + (ls ? when(ls.ts) : 'a while ago') + '.'
+      };
+    };
+    const out = db.items.find(i => i.qty === 0);
+    if (out) { const sg = S.suggest(out); const oo = onOrder(out); return { ...poster(out, 'out'), kicker: 'Out of stock', headline: oo ? out.name + ' arriving ' + S.fmtDate(oo.eta) : out.name + ' out of stock', cap: 'T',
+      body: 'he supply closet is out of ' + out.name.toLowerCase() + '. The low-stock line sits at ' + out.th + ' ' + out.unit + ', and teachers will start asking by lunch. ' + (oo ? 'A reorder is already on the way.' : sg.text + ' from ' + out.vendor + '; the saved product link is one stamp away.'),
+      stat: out.qty + ' ' + out.unit + ' on hand', note: oo ? 'help is on the way' : 'reorder today!', sub: out.name + ' out of stock', urgent: true }; }
+    const ex = db.requests.find(r => r.kind === 'supply' && S.exceeds(r));
+    if (ex) { const it = S.item(ex.itemId); const t = S.user(ex.teacherId).name; return { ...poster(it, 'exceeds', 'Requested by ' + t + ' · ' + ex.qty + ' needed · ' + it.qty + ' on hand'), kicker: 'Exceeds stock', headline: it.name + ': request tops stock', cap: 'A',
+      body: ' request from ' + t + ' is waiting for more ' + it.name.toLowerCase() + ' than the shelf can cover. Approving it anyway takes stock to zero and files a reorder. You can also trim the quantity before stamping it.',
+      stat: it.qty + ' of ' + ex.qty + ' available', note: 'your call, boss', sub: 'Request exceeds stock: ' + it.name, urgent: true }; }
+    const low = [...db.items].sort((a, b) => a.qty / a.th - b.qty / b.th)[0];
+    if (low && low.qty < low.th) { const oo = onOrder(low); return { ...poster(low, 'low'), kicker: 'Running low', headline: oo ? low.name + ' arriving ' + S.fmtDate(oo.eta) : low.name + ' running low', cap: 'O',
+      body: 'nly ' + low.qty + ' ' + low.unit + ' remain against a threshold of ' + low.th + '. ' + (oo ? 'More is already on order.' : S.suggest(low).text + ' from ' + low.vendor + ' to stay ahead of next week.'), stat: low.qty + ' ' + low.unit + ' left', note: 'not urgent yet', sub: 'All the news from the supply closet', urgent: false }; }
+    const c = db.requests.filter(r => r.kind === 'custom' && (r.status === 'pending' || r.status === 'approved')).sort((a, b) => (a.needed || '9').localeCompare(b.needed || '9'))[0];
+    if (c) { const t = S.user(c.teacherId).name; return { isAd: true, icon: '', label: c.name, adLine: c.name + ' ×' + c.qty, needed: S.fmtDate(c.needed) || 'no date given', teacher: t + (c.room ? ', ' + c.room : ''), url: c.url || '', urlShort: (c.url || '').replace(/^https?:\/\/(www\.)?/, ''),
+      kicker: 'Custom request', headline: 'Wanted: ' + c.name, cap: 'A', body: ' request from ' + t + ' for something the closet has never stocked. It is on the to-do list with the product link attached.', stat: c.qty + ' requested', note: 'new to the shelf', caption: 'As requested by ' + t + '.', sub: 'All the news from the supply closet', urgent: false }; }
+    return { isClear: true, kicker: 'Quiet day', headline: 'All quiet on the supply front', cap: 'E', body: 'very item is above its low-stock line and no requests are waiting. A rare quiet morning at the supply desk.', stat: 'All stocked', note: 'enjoy it ★', caption: 'The supply shelf, fully stocked.', sub: 'All the news from the supply closet', urgent: false };
+  }
+  renderVals() {
+    const S = this.S, st = this.state; const db = S ? S.get() : null;
+    const now = new Date(); const start = new Date(now.getFullYear(), 0, 0);
+    const base = { issue: Math.floor((now - start) / 864e5), dateline: DAYS[now.getDay()] + ', ' + MON[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear(), toast: st.toast, toastDisplay: st.toast ? 'block' : 'none' };
+    if (!db) return { ...base, isExtra: false, notExtra: true, subhead: 'All the news from the supply closet', lead: {}, openTodos: [], doneTodos: [], lowItems: [], deliveries: [], pending: [], customs: [], assigned: [], wire: [] };
+    const L = this.lead(db);
+    const oIt = L.itemId ? S.item(L.itemId) : null; const oSg = oIt ? S.suggest(oIt) : null;
+    const orderBits = { orderOpen: st.orderOpen && !!oIt, openOrder: () => this.setState({ orderOpen: true }), closeOrder: () => this.setState({ orderOpen: false }),
+      orderLine: oIt ? oSg.text + ' from ' + oIt.vendor : '', orderUrl: oIt ? oIt.url : '#', orderVendor: oIt ? oIt.vendor : '',
+      placeOrder: () => { S.placeReorder(oIt.id, oSg.packs); this.setState({ orderOpen: false }); this.say('Marked ordered: ' + oIt.name); } };
+    const banner = this.props.banner ?? 'auto';
+    const isExtra = banner === 'extra' || (banner === 'auto' && L.urgent);
+    const lowItems = db.items.filter(i => S.level(i) !== 'ok').map(it => {
+      const ro = db.reorders.find(r => r.itemId === it.id && r.status === 'ordered'); const lv = S.level(it); const lbl = S.LEVEL[lv].label;
+      return { ...it, iconName: it.icon || '', level: lbl, fg: lv === 'low' ? '#2e0f38' : '#fff', bg: lv === 'low' ? '#e7c4ea' : '#8c1c45', suggest: S.suggest(it).text,
+        onOrder: !!ro, canOrder: !ro, eta: ro ? S.fmtDate(ro.eta) : '', order: () => { S.placeReorder(it.id, S.suggest(it).packs); this.say('Marked ordered: ' + it.name); } };
+    });
+    const deliveries = [
+      ...db.reorders.filter(o => o.status === 'ordered').map(o => { const it = S.item(o.itemId); if (!it) return null; return { isReorder: true, title: it.name, eta: S.fmtDate(o.eta), packs: o.packs, units: o.packs * it.pn + ' ' + it.unit,
+        sub: o.packs + ' ' + S.plural(it.pk, o.packs) + ' × ' + it.pn + ' ' + it.unit + ' · ' + it.vendor, cta: 'Received',
+        dec: () => S.setReorderPacks(o.id, o.packs - 1), inc: () => S.setReorderPacks(o.id, o.packs + 1),
+        receive: () => { S.receiveReorder(o.id); this.say('Received and added to stock'); } }; }).filter(Boolean),
+      ...db.requests.filter(r => r.kind === 'custom' && r.status === 'ordered').map(r => ({ isReorder: false, title: r.name + ' ×' + r.qty, eta: S.fmtDate(r.eta), sub: 'Custom request for ' + S.user(r.teacherId).name, cta: 'Delivered',
+        receive: () => { S.customDelivered(r.id); this.say(S.user(r.teacherId).name + ' notified: ' + r.name + ' is ready for pickup'); } }))
+    ];
+    const customs = db.requests.filter(r => r.kind === 'custom' && r.status !== 'denied').sort((a, b) => b.ts - a.ts).map(r => {
+      const s = S.statusOf(r); const t = S.user(r.teacherId).name; const eta = st.etaDrafts[r.id] || S.isoPlus(7);
+      return { ...r, teacher: t, roomStr: r.room ? ', ' + r.room : '', neededFmt: S.fmtDate(r.needed) || 'no date', url: r.url || '#', urlShort: (r.url || 'no link').replace(/^https?:\/\/(www\.)?/, ''),
+        statusLabel: r.status === 'delivered' ? 'Delivered · ready for pickup' : s.label, fg: s.fg, bg: r.status === 'pending' ? '#ddd0e4' : s.bg,
+        isPending: r.status === 'pending', isApproved: r.status === 'approved', etaDraft: eta,
+        setEta: e => this.setState({ etaDrafts: { ...this.state.etaDrafts, [r.id]: e.target.value } }),
+        approve: () => { S.approve(r.id); this.say(t + ' notified: approved, pending order'); },
+        deny: () => { S.deny(r.id); this.say(t + ' notified: request denied'); },
+        order: () => { S.customOrdered(r.id, eta); this.say(t + ' notified: your request for ' + r.name + ' has been ordered — expected to arrive ' + S.fmtDate(eta) + '.'); } };
+    });
+    const pending = db.requests.filter(r => r.status === 'pending' && r.kind !== 'custom').sort((a, b) => a.ts - b.ts).map(r => {
+      const t = S.user(r.teacherId).name;
+      return { ...r, teacher: t, roomStr: r.room ? ' · ' + r.room : '', at: S.fmtTime(r.ts), title: S.reqTitle(r),
+        sub: r.kind === 'laptop' ? (r.type === 'temp' ? S.fmtDate(r.from) + ' – ' + S.fmtDate(r.to) : 'Stays in ' + r.room + ' until returned') : '', exceeds: S.exceeds(r), avail: S.available(r),
+        approve: () => { S.approve(r.id); this.say(t + ' notified: request approved'); }, deny: () => { S.deny(r.id); this.say(t + ' notified: request denied'); },
+        dec: () => S.editQty(r.id, r.qty - 1), inc: () => S.editQty(r.id, r.qty + 1) };
+    });
+    const sug = x => (window.SLIcons && window.SLIcons.suggest(x)) || ''; const tIcon = t => { const it = t.itemId && S.item(t.itemId); const n = it ? (it.icon || sug(it.name) || 'box') : sug(t.text); return { hasIcon: !!n, iconName: n }; };
+    const mkTodo = t => ({ ...t, ...tIcon(t), star: t.auto ? '✶ ' : '', editing: st.editId === t.id, notEditing: st.editId !== t.id, hasDue: !!t.due, dueFmt: S.fmtDate(t.due), hasLink: !!t.link,
+      toggle: () => S.toggleTodo(t.id), remove: () => S.deleteTodo(t.id), edit: () => this.setState({ editId: t.id, editText: t.text }) });
+    const saveEdit = () => { S.editTodo(this.state.editId, this.state.editText); this.setState({ editId: null }); };
+    const lc = S.lapCounts();
+    const outL = db.laptops.filter(l => l.status === 'out');
+    const open = db.todos.filter(t => !t.done), done = db.todos.filter(t => t.done);
+    return { ...base, ...orderBits,
+      isExtra, notExtra: !isExtra, subhead: isExtra ? L.sub : 'All the news from the supply closet', lead: L,
+      openTodos: open.map(mkTodo), doneTodos: done.map(mkTodo), openCount: open.length, doneCount: done.length,
+      showDone: st.showDone, doneArrow: st.showDone ? '▾' : '▸', toggleDone: () => this.setState({ showDone: !st.showDone }),
+      draft: st.draft, setDraft: e => this.setState({ draft: e.target.value }),
+      addTodo: e => { e.preventDefault(); S.addTodo(this.state.draft); this.setState({ draft: '' }); },
+      editText: st.editText, setEditText: e => this.setState({ editText: e.target.value }), saveEdit,
+      editKey: e => { if (e.key === 'Enter') { e.preventDefault(); saveEdit(); } if (e.key === 'Escape') this.setState({ editId: null }); },
+      lowItems, noLow: lowItems.length === 0, deliveries, noDeliveries: deliveries.length === 0,
+      pending, pendingCount: pending.length, noPending: pending.length === 0, customs,
+      lapAvail: lc.available, lapOut: lc.out, lapAssigned: lc.assigned, lapZoom: lc.zoom, hasOut: outL.length > 0,
+      returnOne: () => { S.returnLaptop(outL[0].tag); this.say(outL[0].tag + ' returned'); },
+      assigned: db.laptops.filter(l => l.status === 'assigned').map(l => ({ tag: l.tag, room: l.room, teacher: S.user(l.holder).name, ret: () => S.returnLaptop(l.tag) })),
+      wire: [...db.log].sort((a, b) => b.ts - a.ts).slice(0, 5).map(e => ({ time: S.fmtTime(e.ts), action: e.action, text: [e.teacher, e.item, e.qty !== '' ? '× ' + e.qty : '', e.room].filter(Boolean).join(' · '), result: e.result }))
+    };
+  }
+}
+</script>
+</body>
+</html>

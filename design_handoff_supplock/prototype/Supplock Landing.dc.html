@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Caveat:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background-color:#f6f1f8;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .06 0 0 0 0 .22 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");color:#2e0f38;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8351a8;text-decoration:none}
+a:hover{color:#2e0f38}
+input[type=range]{accent-color:#2e0f38}
+input:focus-visible,button:focus-visible{outline:3px solid #b45dbb;outline-offset:2px}
+</style>
+<script src="./icons.js"></script>
+</helmet>
+
+<div style="min-width:1280px;overflow:hidden">
+
+<header style="max-width:1320px;margin:0 auto;padding:28px 40px;display:flex;align-items:center;justify-content:space-between">
+  <a href="#" style="display:flex;align-items:center;gap:10px;color:#2e0f38">
+    <svg width="30" height="30" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#8351a8"></polygon></svg>
+    <span style="font-family:'Young Serif',serif;font-size:26px;letter-spacing:-0.01em">Supplock</span>
+  </a>
+  <nav style="display:flex;align-items:center;gap:34px;font-size:16px;font-weight:500">
+    <a href="#how" style="color:#2e0f38">How it works</a>
+    <a href="Supplock Teacher.dc.html" style="color:#2e0f38">For teachers</a>
+    <a href="Supplock Laptops.dc.html" style="color:#2e0f38">Laptops</a>
+    <a href="Supplock Gazette.dc.html" style="color:#2e0f38">The Gazette</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="Supplock Login.dc.html" style="color:#2e0f38;font-weight:500;padding:12px 18px">Log in</a>
+    <a href="Supplock Login.dc.html?mode=create" style="background:#2e0f38;color:#f6f1f8;font-weight:700;padding:12px 22px;border-radius:999px;box-shadow:0 4px 0 #1a0621">Get started</a>
+  </div>
+</header>
+
+<section style="max-width:1320px;margin:0 auto;padding:56px 40px 0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr;position:relative">
+  <div style="grid-column:2 / 7;position:relative">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:#2e0f38;color:#f6f1f8;padding:7px 12px;border-radius:8px;transform:rotate(-2deg)">School supply desk</span>
+      <span style="font-family:'Caveat',cursive;font-size:24px;color:#8351a8">for the supply closet that never adds up</span>
+    </div>
+    <h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:92px;line-height:0.98;letter-spacing:-0.025em;margin:0;max-width:960px;text-wrap:balance">Every marker, crayon and laptop — <span style="position:relative;display:inline-block;white-space:nowrap"><span style="position:absolute;left:-6px;right:-10px;bottom:6px;height:26px;background:#e7c4ea;border-radius:40px 10px 30px 12px / 14px 30px 10px 26px;transform:rotate(-1.2deg);z-index:0"></span><span style="position:relative;z-index:1">accounted for.</span></span></h1>
+    <div style="display:flex;align-items:flex-end;gap:48px;margin-top:34px">
+      <div style="max-width:470px">
+        <p style="font-family:'Caveat',cursive;font-size:38px;font-weight:700;color:#8351a8;margin:0 0 8px;transform:rotate(-1.5deg);transform-origin:left">Supplies, locked in.</p>
+        <p style="font-size:19px;line-height:1.55;margin:0;color:#3d2547;text-wrap:pretty">Teachers request what they need in two clicks. You approve, stock updates itself, and anything running low lands on your reorder list before it runs out.</p>
+      </div>
+      <div style="display:flex;gap:14px;padding-bottom:4px">
+        <a href="Supplock Login.dc.html?mode=create" style="background:#8351a8;color:#fff;font-weight:700;font-size:17px;padding:17px 28px;border-radius:18px;box-shadow:0 6px 0 #5e3680,0 14px 26px rgba(46,15,56,.18)" style-hover="transform:translateY(-2px);color:#fff">Start tracking supplies</a>
+        <a href="Supplock Login.dc.html?mode=join" style="background:#fff;color:#2e0f38;font-weight:700;font-size:17px;padding:17px 28px;border-radius:18px;border:2px solid #2e0f38;box-shadow:0 6px 0 #2e0f38" style-hover="transform:translateY(-2px);color:#2e0f38">I'm a teacher</a>
+      </div>
+    </div>
+  </div>
+  <svg width="70" height="70" viewBox="0 0 30 30" style="position:absolute;left:96px;top:70px;transform:rotate(14deg)"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#b45dbb"></polygon></svg>
+  <svg width="28" height="28" viewBox="0 0 30 30" style="position:absolute;left:170px;top:168px"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#4d7b93"></polygon></svg>
+  <svg width="90" height="24" viewBox="0 0 90 24" style="position:absolute;right:60px;top:40px"><path d="M2 12 C12 2, 20 22, 30 12 S48 2, 58 12 S76 22, 88 12" fill="none" stroke="#4d7b93" stroke-width="3" stroke-linecap="round"></path></svg>
+</section>
+
+<section style="position:relative;max-width:1440px;height:900px;margin:70px auto 0">
+  <div style="position:absolute;left:50%;top:70px;width:920px;margin-left:-460px;background:#fff;border-radius:34px;box-shadow:0 10px 0 #ddd0e4,0 40px 80px rgba(46,15,56,.16);overflow:hidden;border:2px solid #2e0f38">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:#1a2c54;color:#f6f1f8">
+      <div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#d9b3dd"></polygon></svg><span style="font-family:'Young Serif',serif;font-size:17px">Supplock</span></div>
+      <div style="display:flex;gap:6px;font-size:13px;font-weight:500">
+        <span style="background:#f6f1f8;color:#1a2c54;padding:6px 12px;border-radius:999px">Dashboard</span>
+        <span style="padding:6px 12px;opacity:.85">Inventory</span>
+        <span style="padding:6px 12px;opacity:.85">Requests</span>
+        <span style="padding:6px 12px;opacity:.85">Laptops</span>
+        <span style="padding:6px 12px;opacity:.85">Gazette</span>
+        <span style="padding:6px 12px;opacity:.85">Log</span>
+      </div>
+      <div style="width:30px;height:30px;border-radius:50%;background:#b45dbb;display:grid;place-items:center;font-size:12px;font-weight:700">JR</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:18px;padding:22px;background:#f6f1f8">
+      <div style="background:#fff;border-radius:22px;padding:20px 22px;border:1px solid #e6dbef">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+          <h3 style="margin:0;font-family:'Young Serif',serif;font-weight:400;font-size:20px">Stock by category</h3>
+          <span style="font-size:12px;color:#5c4766">142 items</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:13px">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:110px 1fr 46px;align-items:center;gap:12px;font-size:13px">
+              <span style="font-weight:500">{{ b.name }}</span>
+              <div style="height:14px;border-radius:999px;background:#efe7f3;overflow:hidden"><div style="height:100%;border-radius:999px;width:{{ b.w }};background:{{ b.c }};transition:width .25s"></div></div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;color:{{ b.tc }};font-weight:700">{{ b.pct }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:18px;font-size:12px;color:#4a3654">
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#4d7b93;display:block"></i>OK</span>
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#b45dbb;display:block"></i>Low</span>
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#9b1d4a;display:block"></i>Critical</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="background:#fff;border-radius:22px;padding:18px 22px;border:1px solid #e6dbef;display:flex;align-items:center;gap:22px">
+          <svg width="112" height="112" viewBox="0 0 42 42" style="transform:rotate(-90deg);flex:none">
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#efe7f3" stroke-width="6"></circle>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#4d7b93" stroke-width="6" stroke-dasharray="60 40" stroke-dashoffset="0"></circle>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#8351a8" stroke-width="6" stroke-dasharray="27 73" stroke-dashoffset="-60"></circle>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#1a2c54" stroke-width="6" stroke-dasharray="13 87" stroke-dashoffset="-87"></circle>
+          </svg>
+          <div style="flex:1">
+            <h3 style="margin:0 0 10px;font-family:'Young Serif',serif;font-weight:400;font-size:20px">Laptops</h3>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:13px">
+              <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#4d7b93;display:block"></i>Available</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700">18</span>
+              <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#8351a8;display:block"></i>Checked out</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700">8</span>
+              <span style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#1a2c54;display:block"></i>In classrooms</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700">4</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:18px 22px;border:1px solid #e6dbef">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <h3 style="margin:0;font-family:'Young Serif',serif;font-weight:400;font-size:20px">Pending requests</h3>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1dff3;color:#6e2c74;padding:3px 9px;border-radius:999px;font-weight:700">{{ pendingCount }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #efe7f3">
+              <div><div style="font-size:13px;font-weight:700">Dry-erase markers × 12</div><div style="font-size:12px;color:#5c4766">Ms. Alvarez · Rm 108</div></div>
+              <span style="font-size:11px;font-weight:700;color:#fff;background:{{ row1Bg }};padding:4px 9px;border-radius:8px;white-space:nowrap">{{ row1Label }}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #efe7f3">
+              <div><div style="font-size:13px;font-weight:700">Laptops × 6</div><div style="font-size:12px;color:#5c4766">Mr. Chen · Oct 14–16 · testing</div></div>
+              <span style="font-size:11px;font-weight:700;color:#1a2c54;background:#dde2ee;padding:4px 9px;border-radius:8px">Pending</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0">
+              <div><div style="font-size:13px;font-weight:700">Wobble cushions × 2</div><div style="font-size:12px;color:#5c4766">Ms. Patel · Rm 204</div></div>
+              <span style="font-size:11px;font-weight:700;color:#6e2c74;background:#f1dff3;padding:4px 9px;border-radius:8px">Custom</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating widgets -->
+  <div data-float="0" style="position:absolute;left:calc(50% - 690px);top:40px;z-index:3">
+    <div style="transform:rotate(-8deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#8351a8;color:#fff;border-radius:30px;padding:20px;width:250px;box-shadow:0 8px 0 #5e3680,0 18px 30px rgba(46,15,56,.22),0 4px 8px rgba(46,15,56,.12)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:56px;height:56px;border-radius:16px;background:#f6f1f8;display:grid;place-items:center"><sl-icon name="tissues" size="46"></sl-icon></div>
+        <div><div style="font-weight:700;font-size:16px">Tissues</div><div style="font-size:13px;color:#eadcf3">In stock</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#6c3f91;border-radius:16px;padding:6px;margin-bottom:10px">
+        <button onClick="{{ dec }}" aria-label="Decrease" style="width:44px;height:44px;border:none;border-radius:12px;background:#fff;color:#2e0f38;font-size:22px;font-weight:700;cursor:pointer">−</button>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700">{{ qty }}</span>
+        <button onClick="{{ inc }}" aria-label="Increase" style="width:44px;height:44px;border:none;border-radius:12px;background:#fff;color:#2e0f38;font-size:22px;font-weight:700;cursor:pointer">+</button>
+      </div>
+      <button onClick="{{ request }}" style="width:100%;height:52px;border:none;border-radius:16px;background:#2e0f38;color:#fff;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #1a0621">{{ requestLabel }}</button>
+    </div>
+  </div>
+
+  <div data-float="1" style="position:absolute;left:calc(50% - 720px);top:430px;z-index:3">
+    <div style="transform:rotate(6deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#4d7b93;color:#fff;border-radius:30px;padding:20px 22px;width:260px;box-shadow:0 8px 0 #335a6e,0 18px 30px rgba(46,15,56,.22),0 4px 8px rgba(46,15,56,.12)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+        <span style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px"><span style="background:#f6f1f8;border-radius:12px;padding:3px;display:flex"><sl-icon name="tissues" size="40"></sl-icon></span>Tissues</span>
+        <span style="font-size:12px;font-weight:700;background:#fff;color:{{ stockColor }};padding:3px 9px;border-radius:999px">{{ stockStatus }}</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;margin-bottom:6px">{{ stock }}<span style="font-size:14px;font-weight:500"> boxes</span></div>
+      <input type="range" min="0" max="100" value="{{ stock }}" onChange="{{ setStock }}" aria-label="Tissue stock" style="width:100%;height:28px;margin:0"></input>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#e6f0f4"><span>0</span><span>low at 30</span><span>100</span></div>
+    </div>
+  </div>
+
+  <div data-float="2" style="position:absolute;left:calc(50% + 430px);top:10px;z-index:3">
+    <div style="transform:rotate(7deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#b45dbb;color:#fff;border-radius:30px;padding:18px;width:250px;box-shadow:0 8px 0 #8a3f90,0 18px 30px rgba(46,15,56,.22),0 4px 8px rgba(46,15,56,.12)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Ms. Alvarez · markers × 12</div>
+      <div style="font-size:12px;font-weight:700;background:#2e0f38;padding:4px 8px;border-radius:8px;display:inline-block;margin-bottom:12px">Exceeds stock (4 available)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;background:#8f4396;border-radius:18px;padding:5px;gap:5px">
+        <button onClick="{{ approve }}" style="height:48px;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;background:{{ apBg }};color:{{ apFg }}">Approve</button>
+        <button onClick="{{ deny }}" style="height:48px;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;background:{{ dnBg }};color:{{ dnFg }}">Deny</button>
+      </div>
+    </div>
+  </div>
+
+  <div data-float="3" style="position:absolute;left:calc(50% + 460px);top:300px;z-index:3">
+    <div style="transform:rotate(-6deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#1a2c54;color:#f6f1f8;border-radius:30px;padding:20px 22px;width:240px;box-shadow:0 8px 0 #0f1b37,0 18px 30px rgba(46,15,56,.22),0 4px 8px rgba(46,15,56,.12)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#f6f1f8;border-radius:14px;padding:3px;display:flex"><sl-icon name="laptop-zoom" size="40"></sl-icon></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;letter-spacing:0.02em">LT-001</span>
+      </div>
+      <div style="font-size:13px;color:#c9d1e3;margin-bottom:12px">Assigned · Rm 204 · Ms. Patel</div>
+      <button onClick="{{ toggleZoom }}" role="switch" aria-checked="{{ zoom }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:#2a3e6a;border:none;border-radius:16px;padding:10px 12px;color:#f6f1f8;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer">
+        <span>Zoom installed</span>
+        <span style="position:relative;width:52px;height:30px;border-radius:999px;background:{{ zoomTrack }};transition:background .2s;display:block"><span style="position:absolute;top:3px;left:{{ zoomKnob }};width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s;display:block"></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div data-float="4" style="position:absolute;left:calc(50% - 600px);top:690px;z-index:3">
+    <div style="transform:rotate(-4deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#fffdfb;color:#2e0f38;border-radius:30px;padding:18px 20px;width:290px;border:2px solid #2e0f38;box-shadow:0 8px 0 #2e0f38,0 18px 30px rgba(46,15,56,.2)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <div style="font-family:'Young Serif',serif;font-size:19px;margin-bottom:8px">To-do</div>
+      <sc-for list="{{ todos }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.toggle }}" style="display:flex;align-items:center;gap:10px;width:100%;min-height:44px;background:none;border:none;padding:0;text-align:left;cursor:pointer;font-family:'DM Sans',sans-serif;color:#2e0f38">
+          <span style="flex:none;width:24px;height:24px;border:2.5px solid #2e0f38;border-radius:7px 5px 8px 4px;display:grid;place-items:center;background:{{ t.box }};color:#fff;font-size:15px;font-weight:700">{{ t.mark }}</span>
+          <sc-if value="{{ t.icon }}" hint-placeholder-val="{{ false }}"><sl-icon name="{{ t.icon }}" size="40"></sl-icon></sc-if><span style="font-size:14px;font-weight:500;text-decoration:{{ t.deco }};opacity:{{ t.op }}">{{ t.text }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-float="5" style="position:absolute;left:calc(50% + 330px);top:700px;z-index:3">
+    <div style="transform:rotate(9deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#dce8ee;color:#1a2c54;border-radius:30px;padding:18px 20px;width:240px;box-shadow:0 8px 0 #9ebccb,0 18px 30px rgba(46,15,56,.18)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <label style="display:block;font-size:13px;font-weight:700;margin-bottom:8px">Needed by</label>
+      <input type="date" value="{{ neededBy }}" onChange="{{ setNeededBy }}" style="width:100%;height:48px;border:2px solid #1a2c54;border-radius:14px;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:15px;color:#1a2c54;background:#fff"></input>
+    </div>
+  </div>
+
+  <div data-float="6" style="position:absolute;left:calc(50% + 560px);top:560px;z-index:2">
+    <div style="transform:rotate(-10deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);background:#e6dbef;color:#2e0f38;border-radius:30px;padding:18px 20px;width:200px;box-shadow:0 8px 0 #c2abd4,0 18px 30px rgba(46,15,56,.18)" style-hover="transform:rotate(0deg) translateY(-10px)">
+      <label style="display:block;font-size:13px;font-weight:700;margin-bottom:8px">Classroom</label>
+      <input value="{{ classroom }}" onChange="{{ setClassroom }}" style="width:100%;height:48px;border:2px solid #8351a8;border-radius:14px;padding:0 12px;font-family:'DM Sans',sans-serif;font-size:16px;color:#2e0f38;background:#fff"></input>
+    </div>
+  </div>
+
+  <div data-float="7" style="position:absolute;left:calc(50% - 600px);top:620px;z-index:1"><div style="width:78px;height:78px;border-radius:24px;background:#b45dbb;transform:rotate(-12deg);box-shadow:0 7px 0 #8a3f90,0 14px 24px rgba(46,15,56,.18)"></div></div>
+  <div data-float="8" style="position:absolute;left:calc(50% + 380px);top:250px;z-index:1"><div style="width:56px;height:56px;border-radius:18px;background:#4d7b93;transform:rotate(10deg);box-shadow:0 6px 0 #335a6e,0 12px 20px rgba(46,15,56,.18)"></div></div>
+  <div data-float="9" style="position:absolute;left:calc(50% - 120px);top:820px;z-index:1"><div style="width:120px;height:52px;border-radius:20px;background:#1a2c54;transform:rotate(-5deg);box-shadow:0 6px 0 #0f1b37,0 12px 20px rgba(46,15,56,.18)"></div></div>
+  <div data-float="10" style="position:absolute;left:calc(50% + 120px);top:24px;z-index:1"><div style="width:44px;height:44px;border-radius:14px;background:#8351a8;transform:rotate(8deg);box-shadow:0 5px 0 #5e3680"></div></div>
+
+  <!-- stickers -->
+  <div style="position:absolute;left:calc(50% - 560px);top:-80px;z-index:4;transform:rotate(-9deg)">
+    <div style="position:absolute;left:44px;top:-12px;width:70px;height:22px;background:rgba(230,219,239,.85);transform:rotate(4deg);z-index:2"></div>
+    <div style="width:150px;height:118px;border:7px solid #fff;border-radius:18px;box-shadow:0 6px 14px rgba(46,15,56,.22);background:#fff;display:grid;place-items:center"><sl-icon name="crayons" size="100" variant="detail"></sl-icon></div>
+  </div>
+  <div style="position:absolute;left:calc(50% + 230px);top:822px;z-index:2;transform:rotate(7deg)">
+    <div style="width:130px;height:104px;border:7px solid #fff;border-radius:18px;box-shadow:0 6px 14px rgba(46,15,56,.22);background:#fff;display:grid;place-items:center"><sl-icon name="tissues" size="86" variant="detail"></sl-icon></div>
+  </div>
+
+  <!-- annotations -->
+  <div style="position:absolute;left:calc(50% - 360px);top:12px;z-index:5;font-family:'Caveat',cursive;font-size:30px;font-weight:700;color:#2e0f38;transform:rotate(-6deg);pointer-events:none">
+    two clicks. done.
+    <svg width="90" height="60" viewBox="0 0 90 60" style="position:absolute;left:-90px;top:24px"><path d="M86 8 C60 4, 26 18, 10 50" fill="none" stroke="#2e0f38" stroke-width="2.5" stroke-linecap="round"></path><path d="M10 50 L11 37 M10 50 L21 44" fill="none" stroke="#2e0f38" stroke-width="2.5" stroke-linecap="round"></path></svg>
+  </div>
+  <div style="position:absolute;left:calc(50% + 300px);top:-40px;z-index:5;font-family:'Caveat',cursive;font-size:26px;font-weight:700;color:#8351a8;transform:rotate(4deg);width:170px;line-height:1;text-align:right;pointer-events:none">stock only moves when you approve
+    <svg width="60" height="40" viewBox="0 0 60 40" style="position:absolute;right:-56px;top:22px"><path d="M2 8 C30 2, 50 14, 54 34" fill="none" stroke="#8351a8" stroke-width="2.5" stroke-linecap="round"></path><path d="M54 34 L46 26 M54 34 L58 23" fill="none" stroke="#8351a8" stroke-width="2.5" stroke-linecap="round"></path></svg>
+  </div>
+  <div style="position:absolute;left:calc(50% + 470px);top:480px;z-index:5;font-family:'Caveat',cursive;font-size:26px;font-weight:700;color:#1a2c54;transform:rotate(-5deg);pointer-events:none">never lose LT-001 again
+    <div style="position:absolute;left:-18px;top:-10px;width:250px;height:52px;border:2.5px solid #b45dbb;border-radius:60% 40% 55% 45% / 55% 60% 40% 45%;transform:rotate(3deg)"></div>
+  </div>
+  <div style="position:absolute;left:calc(50% - 300px);top:810px;z-index:5;font-family:'Caveat',cursive;font-size:26px;font-weight:700;color:#8351a8;transform:rotate(3deg);pointer-events:none">auto-added when stock runs low ★</div>
+
+  <div style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:20;display:{{ toastDisplay }};background:#2e0f38;color:#f6f1f8;padding:14px 22px;border-radius:16px;font-weight:700;box-shadow:0 6px 0 #1a0621,0 14px 30px rgba(46,15,56,.3)">Request sent — awaiting approval</div>
+</section>
+
+<section id="how" style="max-width:1320px;margin:60px auto 0;padding:40px 40px 100px">
+  <div style="display:flex;align-items:baseline;gap:20px;margin-bottom:40px">
+    <h2 style="font-family:'Young Serif',serif;font-weight:400;font-size:52px;letter-spacing:-0.02em;margin:0">How the closet stays full</h2>
+    <svg width="120" height="20" viewBox="0 0 120 20"><path d="M2 10 C14 2, 22 18, 34 10 S56 2, 68 10 S90 18, 118 8" fill="none" stroke="#b45dbb" stroke-width="3" stroke-linecap="round"></path></svg>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px">
+    <div style="background:#fff;padding:30px;border:2px solid #2e0f38;border-radius:28px 22px 30px 20px / 22px 30px 20px 28px;box-shadow:0 6px 0 #2e0f38">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#8351a8;margin-bottom:14px">01</div>
+      <h3 style="font-family:'Young Serif',serif;font-weight:400;font-size:28px;margin:0 0 10px">Teachers request</h3>
+      <p style="font-size:17px;line-height:1.55;margin:0;color:#3d2547;text-wrap:pretty">The inventory list is the first screen they see, with a Request button on every item. Anything not listed can be requested with a product link and a needed-by date.</p>
+    </div>
+    <div style="background:#fff;padding:30px;border:2px solid #2e0f38;border-radius:22px 30px 20px 28px / 30px 20px 28px 22px;box-shadow:0 6px 0 #2e0f38">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#8351a8;margin-bottom:14px">02</div>
+      <h3 style="font-family:'Young Serif',serif;font-weight:400;font-size:28px;margin:0 0 10px">You approve</h3>
+      <p style="font-size:17px;line-height:1.55;margin:0;color:#3d2547;text-wrap:pretty">Approve, deny or edit the quantity first. Stock is deducted on approval, never before, and requests that exceed what's on the shelf are flagged so you see them right away.</p>
+    </div>
+    <div style="background:#fff;padding:30px;border:2px solid #2e0f38;border-radius:30px 20px 26px 24px / 20px 26px 24px 30px;box-shadow:0 6px 0 #2e0f38">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#8351a8;margin-bottom:14px">03</div>
+      <h3 style="font-family:'Young Serif',serif;font-weight:400;font-size:28px;margin:0 0 10px">The list reorders for you</h3>
+      <p style="font-size:17px;line-height:1.55;margin:0;color:#3d2547;text-wrap:pretty">Low stock adds "Order more tissues" to your to-do list with the pack size and saved product link. Mark it received and the right count goes back on the shelf.</p>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#2e0f38;color:#f6f1f8">
+  <div style="max-width:1320px;margin:0 auto;padding:48px 40px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:12px">
+      <svg width="26" height="26" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#d9b3dd"></polygon></svg>
+      <span style="font-family:'Young Serif',serif;font-size:24px">Supplock</span>
+      <span style="font-family:'Caveat',cursive;font-size:26px;color:#e3c6e6;margin-left:8px">Supplies, locked in.</span>
+    </div>
+    <a href="Supplock Login.dc.html" style="background:#b45dbb;color:#fff;font-weight:700;padding:15px 26px;border-radius:18px;box-shadow:0 5px 0 #8a3f90">Start tracking supplies</a>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { qty: 3, sent: false, stock: 62, decision: 'pending', zoom: true, neededBy: '2026-10-24', classroom: 'Rm 204',
+    todos: [{ text: 'Order more dry-erase markers', done: false }, { text: "Call Sam's Club about bulk pricing", done: false }, { text: 'Order 1 box = 10 reams', done: true }] };
+  componentDidMount() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const t0 = performance.now();
+    const loop = (t) => {
+      document.querySelectorAll('[data-float]').forEach(el => {
+        const i = +el.dataset.float;
+        el.style.transform = `translateY(${Math.sin((t - t0) / (1600 + i * 170) + i * 1.3) * 7}px)`;
+      });
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearTimeout(this.tt); }
+  renderVals() {
+    const s = this.state;
+    const lvl = s.stock < 10 ? 'crit' : s.stock < 30 ? 'low' : 'ok';
+    const col = { ok: '#4d7b93', low: '#b45dbb', crit: '#9b1d4a' };
+    const tcol = { ok: '#335a6e', low: '#8a3f90', crit: '#9b1d4a' };
+    const mk = (name, p, l) => ({ name, w: p + '%', pct: p + '%', c: col[l], tc: tcol[l] });
+    const bars = [mk('Paper', 82, 'ok'), mk('Cleaning', s.stock, lvl), mk('Art', 61, 'ok'), mk('Writing', 8, 'crit'), mk('Classroom', 74, 'ok'), mk('Tech', 27, 'low')];
+    const d = s.decision;
+    return {
+      ...s, bars,
+      dec: () => this.setState({ qty: Math.max(1, s.qty - 1) }),
+      inc: () => this.setState({ qty: Math.min(99, s.qty + 1) }),
+      request: () => { this.setState({ sent: true }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ sent: false }), 2400); },
+      requestLabel: s.sent ? 'Sent ✓' : 'Request',
+      toastDisplay: s.sent ? 'block' : 'none',
+      setStock: e => this.setState({ stock: +e.target.value }),
+      stockStatus: { ok: 'OK', low: 'Low', crit: s.stock === 0 ? 'Out of stock' : 'Critical' }[lvl],
+      stockColor: tcol[lvl],
+      approve: () => this.setState({ decision: d === 'approved' ? 'pending' : 'approved' }),
+      deny: () => this.setState({ decision: d === 'denied' ? 'pending' : 'denied' }),
+      apBg: d === 'approved' ? '#fff' : 'transparent', apFg: d === 'approved' ? '#2e0f38' : '#fff',
+      dnBg: d === 'denied' ? '#2e0f38' : 'transparent', dnFg: '#fff',
+      row1Label: d === 'approved' ? 'Approved' : d === 'denied' ? 'Denied' : 'Exceeds stock',
+      row1Bg: d === 'approved' ? '#4d7b93' : d === 'denied' ? '#5c4766' : '#9b1d4a',
+      pendingCount: d === 'pending' ? 3 : 2,
+      toggleZoom: () => this.setState({ zoom: !s.zoom }),
+      zoomTrack: s.zoom ? '#b45dbb' : '#5a6a8c', zoomKnob: s.zoom ? '25px' : '3px',
+      todos: s.todos.map((t, i) => ({ ...t, icon: ['markers', '', 'paper'][i] || '', box: t.done ? '#8351a8' : '#fff', mark: t.done ? '✓' : '', deco: t.done ? 'line-through' : 'none', op: t.done ? 0.55 : 1,
+        toggle: () => this.setState({ todos: s.todos.map((x, j) => j === i ? { ...x, done: !x.done } : x) }) })),
+      setNeededBy: e => this.setState({ neededBy: e.target.value }),
+      setClassroom: e => this.setState({ classroom: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

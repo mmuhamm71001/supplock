@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Caveat:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#f6f1f8;color:#2e0f38;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8351a8}
+a:hover{color:#2e0f38}
+input{font:inherit;color:inherit}
+input:focus-visible,button:focus-visible{outline:3px solid #b45dbb;outline-offset:2px}
+</style>
+<script src="./icons.js"></script>
+<script src="./blocks.js"></script>
+</helmet>
+<div data-screen-label="Inventory" style="min-height:100vh">
+  <header style="background:#1a2c54;color:#f6f1f8">
+    <div style="max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <a href="Supplock Landing.dc.html" style="display:flex;align-items:center;gap:8px;color:#f6f1f8;text-decoration:none"><svg width="22" height="22" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#d9b3dd"></polygon></svg><span style="font-family:'Young Serif',serif;font-size:20px">Supplock</span></a>
+      <nav style="display:flex;gap:2px;flex-wrap:wrap">
+        <a href="Supplock Admin.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Dashboard</a>
+        <a href="Supplock Inventory.dc.html" style="padding:10px 14px;border-radius:999px;background:#f6f1f8;color:#1a2c54;font-weight:700;font-size:15px;text-decoration:none">Inventory</a>
+        <a href="Supplock Laptops.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Laptops</a>
+        <a href="Supplock Spaces.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Spaces</a>
+        <a href="Supplock Gazette.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">To-do · Gazette</a>
+        <a href="Supplock Log.dc.html" style="padding:10px 14px;border-radius:999px;color:#f6f1f8;font-size:15px;text-decoration:none">Log</a>
+      </nav>
+      <span style="margin-left:auto;font-weight:700;font-size:15px">J. Ruiz · Admin</span>
+    </div>
+  </header>
+  <main style="max-width:1240px;margin:0 auto;padding:26px 20px 80px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+      <div><h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:38px;margin:0">Inventory</h1><div style="font-size:15px;color:#5c4766;margin-top:4px">Stock is counted in each item's base unit.</div></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search items" aria-label="Search items" style="height:48px;width:240px;border:2px solid #e6dbef;border-radius:14px;padding:0 14px;background:#fff;font-size:15px"></input>
+        <button onClick="{{ doExport }}" style="white-space:nowrap;min-height:48px;padding:0 16px;border:2px solid #4d7b93;border-radius:16px;background:#fff;color:#2f4f60;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #4d7b93;display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{ exportLabel }}</button>
+        <button onClick="{{ openNew }}" style="min-height:48px;padding:0 20px;border:none;border-radius:14px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #5e3680">+ Add item</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin:8px 0 30px">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+        <sl-block color="{{ s.color }}" tilt="{{ s.tilt }}" float="{{ s.f }}" radius="26" style="flex:1 1 180px;max-width:270px">
+          <button onClick="{{ s.pick }}" aria-pressed="{{ s.on }}" style="width:100%;background:none;border:none;color:inherit;text-align:left;padding:16px 20px;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:26px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;line-height:1.05">{{ s.n }}</div>
+            <div style="font-size:16px;font-weight:700">{{ s.label }}</div>
+            <div style="font-size:13px;font-weight:500;margin-top:2px">{{ s.hint }}</div>
+          </button>
+        </sl-block>
+      </sc-for>
+    </div>
+    <div style="background:#fff;border-radius:24px;border:2px solid #e6dbef;overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:900px">
+        <thead><tr style="text-align:left;color:#5c4766;font-size:12px;text-transform:uppercase;letter-spacing:.06em">
+          <th style="padding:14px 16px">Item</th><th style="padding:14px 8px">Stock</th><th style="padding:14px 8px">Low at</th><th style="padding:14px 8px">Pack</th><th style="padding:14px 8px">Vendor</th><th style="padding:14px 8px">Price / unit</th><th style="padding:14px 8px">Status</th><th style="padding:14px 16px"></th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+            <tr style="border-top:1px solid #efe7f3">
+              <td style="padding:8px 16px"><div style="display:flex;align-items:center;gap:12px"><sl-icon name="{{ r.iconName }}" label="{{ r.name }}" size="42"></sl-icon><div><div style="font-weight:700;font-size:15px">{{ r.name }}</div><div style="font-size:13px;color:#5c4766">{{ r.cat }}</div></div></div></td>
+              <td style="padding:10px 8px"><div style="display:flex;align-items:center;gap:4px">
+                <button onClick="{{ r.minus }}" aria-label="Remove one" style="width:32px;height:32px;border:none;border-radius:9px;background:#f1eaf5;font-weight:700;cursor:pointer;color:#2e0f38">−</button>
+                <span style="font-family:'JetBrains Mono',monospace;font-weight:700;min-width:40px;text-align:center">{{ r.qty }}</span>
+                <button onClick="{{ r.plus }}" aria-label="Add one" style="width:32px;height:32px;border:none;border-radius:9px;background:#f1eaf5;font-weight:700;cursor:pointer;color:#2e0f38">+</button>
+                <span style="color:#5c4766;margin-left:4px">{{ r.unit }}</span></div></td>
+              <td style="padding:10px 8px;font-family:'JetBrains Mono',monospace">{{ r.th }}</td>
+              <td style="padding:10px 8px">1 {{ r.pk }} = {{ r.pn }}</td>
+              <td style="padding:10px 8px"><a href="{{ r.url }}" target="_blank">{{ r.vendor }}</a></td>
+              <td style="padding:10px 8px;font-family:'JetBrains Mono',monospace">{{ r.priceStr }}</td>
+              <td style="padding:10px 8px"><span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;color:{{ r.fg }};background:{{ r.bg }};white-space:nowrap">{{ r.label }}</span></td>
+              <td style="padding:10px 16px;text-align:right;white-space:nowrap">
+                <button onClick="{{ r.edit }}" style="min-height:36px;padding:0 12px;border:2px solid #2e0f38;border-radius:10px;background:#fff;font:inherit;font-weight:700;font-size:13px;cursor:pointer;color:#2e0f38">Edit</button>
+                <button onClick="{{ r.remove }}" style="min-height:36px;padding:0 10px;border:none;background:none;font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;color:#8c1c45">Remove</button>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}"><div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 44px;gap:8px">
+            <sl-block deco="1" color="lavender" tilt="-10" float="2" radius="16" style="position:absolute;left:10%;top:22px;width:46px;height:46px"></sl-block>
+            <sl-block deco="1" color="teal" tilt="8" float="4" radius="12" style="position:absolute;right:12%;top:46px;width:32px;height:32px"></sl-block>
+            <sl-block deco="1" mhide="1" color="pink" tilt="6" float="1" radius="14" style="position:absolute;right:6%;bottom:14px;width:58px;height:24px"></sl-block>
+            <sl-icon name="box" size="120" variant="detail"></sl-icon>
+            <div style="font-family:'Caveat',cursive;font-size:30px;font-weight:700;color:#5e3680">nothing on this shelf</div>
+            <div style="font-size:16px;color:#3d2547;max-width:380px">No items match. Try another search, or clear the filter above.</div>
+          </div></sc-if>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:22px;margin-top:26px;align-items:start">
+      <div style="background:#fff;border-radius:24px;padding:20px 22px;border:2px solid #e6dbef">
+        <h2 style="font-family:'Young Serif',serif;font-weight:400;font-size:24px;margin:0">Shopping list</h2>
+        <div style="font-size:14px;color:#5c4766;margin:4px 0 10px">Pre-filled from low stock. Open each link, check out on the vendor's site, then mark it ordered.</div>
+        <sc-for list="{{ shop }}" as="g" hint-placeholder-count="2">
+          <div style="padding:10px 0;border-top:1px solid #efe7f3">
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#5e3680;margin-bottom:4px">{{ g.vendor }}</div>
+            <sc-for list="{{ g.lines }}" as="l" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:10px;padding:6px 0;flex-wrap:wrap">
+                <sl-icon name="{{ l.icon }}" label="{{ l.name }}" size="40"></sl-icon><div style="flex:1;min-width:160px"><a href="{{ l.url }}" target="_blank" style="font-weight:700">{{ l.name }}</a><div style="font-size:14px">{{ l.text }}</div></div>
+                <button onClick="{{ l.order }}" style="min-height:44px;padding:0 14px;border:none;border-radius:12px;background:#1a2c54;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer">Mark ordered</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noShop }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Caveat',cursive;font-size:26px;color:#4d7b93">nothing to buy right now ★</div></sc-if>
+      </div>
+      <div style="background:#fff;border-radius:24px;padding:20px 22px;border:2px solid #e6dbef">
+        <h2 style="font-family:'Young Serif',serif;font-weight:400;font-size:24px;margin:0 0 10px">Orders</h2>
+        <sc-for list="{{ orders }}" as="o" hint-placeholder-count="2">
+          <div style="padding:10px 0;border-top:1px solid #efe7f3;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px"><div style="font-weight:700">{{ o.name }}</div><div style="font-size:13px;color:#5c4766">{{ o.meta }}</div></div>
+            <sc-if value="{{ o.open }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:4px;background:#f1eaf5;border-radius:12px;padding:3px">
+                <button onClick="{{ o.dec }}" aria-label="Fewer" style="width:36px;height:36px;border:none;border-radius:9px;background:#fff;font-weight:700;cursor:pointer;color:#2e0f38">−</button>
+                <span style="font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;text-align:center">{{ o.packs }}</span>
+                <button onClick="{{ o.inc }}" aria-label="More" style="width:36px;height:36px;border:none;border-radius:9px;background:#fff;font-weight:700;cursor:pointer;color:#2e0f38">+</button>
+              </div>
+              <button onClick="{{ o.receive }}" style="min-height:44px;padding:0 14px;border:none;border-radius:12px;background:#4d7b93;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer">Received +{{ o.units }}</button>
+            </sc-if>
+            <sc-if value="{{ o.done }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#e6dbef">Received</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </main>
+  <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ close }}" style="position:fixed;inset:0;background:rgba(46,15,56,.45);display:flex;justify-content:flex-end;z-index:50">
+      <form onSubmit="{{ save }}" onClick="{{ stop }}" style="width:100%;max-width:440px;height:100%;overflow:auto;background:#fff;padding:26px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-family:'Young Serif',serif;font-weight:400;font-size:26px;margin:0">{{ formTitle }}</h2><button type="button" onClick="{{ close }}" aria-label="Close" style="width:44px;height:44px;border:none;border-radius:14px;background:#f1eaf5;font-size:20px;cursor:pointer;color:#2e0f38">×</button></div>
+        <sc-for list="{{ fields }}" as="fd" hint-placeholder-count="10">
+          <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700">{{ fd.label }}<span style="font-weight:400;font-size:13px;color:#5c4766;margin-top:-4px">{{ fd.hint }}</span>
+            <input type="{{ fd.type }}" value="{{ fd.value }}" onChange="{{ fd.set }}" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font-weight:400;font-size:15px"></input>
+          </label>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700">Icon<span style="font-weight:400;font-size:13px;color:#5c4766">{{ iconHint }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px">
+            <sc-for list="{{ iconOpts }}" as="o" hint-placeholder-count="18">
+              <button type="button" onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" title="{{ o.label }}" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 6px;min-height:44px;border-radius:14px;border:2px solid {{ o.border }};background:{{ o.bg }};cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.15;color:#2e0f38;text-align:center"><sl-icon name="{{ o.id }}" size="44"></sl-icon><span>{{ o.label }}</span><span style="position:absolute;top:-7px;right:-4px;font-size:10px;font-weight:700;background:#8351a8;color:#fff;padding:1px 5px;border-radius:6px;display:{{ o.tag }}">auto</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="font-size:14px;background:#f1eaf5;border-radius:12px;padding:10px 12px">{{ packPreview }}</div>
+        <button type="submit" style="height:54px;border:none;border-radius:16px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer;box-shadow:0 4px 0 #5e3680;margin-top:6px">Save item</button>
+      </form>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const FIELDS = [
+  ['name', 'Name', '', 'text'], ['cat', 'Category', 'e.g. Paper, Art, Cleaning', 'text'], ['unit', 'Base unit', 'How stock is counted, e.g. ream', 'text'],
+  ['qty', 'Current quantity', 'In base units', 'number'], ['th', 'Low-stock threshold', 'Alert when stock drops below this', 'number'],
+  ['vendor', 'Preferred vendor', '', 'text'], ['url', 'Product link', '', 'url'], ['pk', 'Purchase unit', 'e.g. box, case, pack. Use "each" if sold individually', 'text'],
+  ['pn', 'Units per purchase', 'e.g. 1 box = 10 reams', 'number'], ['price', 'Price per base unit ($)', '', 'number']
+];
+class Component extends DCLogic {
+  state = { q: '', form: null };
+  componentDidMount() { import(new URL('./store.js', location.href).href).then(m => { this.S = m; if (!m.me() || m.me().role !== 'admin') m.login('admin'); this.un = m.subscribe(() => this.forceUpdate()); this.forceUpdate(); }); }
+  componentWillUnmount() { this.un && this.un(); }
+  renderVals() {
+    const S = this.S, st = this.state; const db = S ? S.get() : null;
+    if (!db) return { rows: [], shop: [], orders: [], fields: [], stats: [] };
+    const fl = st.filter || 'all'; const lv = i => S.level(i);
+    const match = i => fl === 'all' || (fl === 'low' ? (lv(i) === 'low' || lv(i) === 'critical') : lv(i) === 'out');
+    const nLow = db.items.filter(i => lv(i) === 'low' || lv(i) === 'critical').length, nOut = db.items.filter(i => lv(i) === 'out').length;
+    const stats = [['all', 'Total items', db.items.length, 'purple', -3, 0], ['low', 'Running low', nLow, 'orchid', 2, 2], ['out', 'Out of stock', nOut, 'berry', -2, 4]].map(([k, label, n, color, tilt, f]) => ({ label, n, color, tilt, f, on: fl === k, hint: fl === k ? (k === 'all' ? 'Showing everything' : 'Showing these · tap to clear') : 'Tap to filter', pick: () => this.setState({ filter: fl === k ? 'all' : k }) }));
+    const rows = db.items.filter(i => match(i) && i.name.toLowerCase().includes(st.q.toLowerCase())).map(i => { const L = S.LEVEL[S.level(i)];
+      return { ...i, iconName: i.icon || '', priceStr: '$' + Number(i.price || 0).toFixed(2), label: L.label, fg: L.fg, bg: L.bg,
+        minus: () => S.adjust(i.id, -1), plus: () => S.adjust(i.id, 1), edit: () => this.setState({ form: { ...i } }),
+        remove: () => { if (confirm(`Remove ${i.name} from inventory?`)) S.removeItem(i.id); } }; });
+    const onOrder = new Set(db.reorders.filter(o => o.status === 'ordered').map(o => o.itemId));
+    const need = db.items.filter(i => S.level(i) !== 'ok' && !onOrder.has(i.id));
+    const shop = [...new Set(need.map(i => i.vendor))].map(v => ({ vendor: v, lines: need.filter(i => i.vendor === v).map(i => { const sg = S.suggest(i); return { name: i.name, icon: i.icon || '', url: i.url, text: `${sg.text} · ~$${(sg.units * (i.price || 0)).toFixed(2)}`, order: () => S.placeReorder(i.id, sg.packs) }; }) }));
+    const orders = db.reorders.map(o => { const i = S.item(o.itemId) || { name: '(removed item)', pk: 'pack', pn: 1, unit: '' }; const open = o.status === 'ordered';
+      return { name: i.name, packs: o.packs, units: o.packs * i.pn, open, done: !open,
+        meta: open ? `${o.packs} ${S.plural(i.pk, o.packs)} × ${i.pn} ${i.unit} · placed ${S.fmtDate(o.placed)} · arrives ${S.fmtDate(o.eta)}` : `${o.received} ${S.plural(i.pk, o.received)} received · placed ${S.fmtDate(o.placed)}`,
+        dec: () => S.setReorderPacks(o.id, o.packs - 1), inc: () => S.setReorderPacks(o.id, o.packs + 1), receive: () => S.receiveReorder(o.id) }; });
+    const f = st.form;
+    const SL = window.SLIcons; const sugIcon = f ? ((SL && SL.suggest(f.name)) || 'box') : 'box';
+    const selIcon = f ? (f.iconPicked ? f.icon : (f.icon || sugIcon)) : 'box';
+    const iconOpts = f && SL ? SL.list.map(o => { const on = o.id === selIcon; return { ...o, on, border: on ? '#8351a8' : '#e6dbef', bg: on ? '#f1dff3' : '#fff', tag: o.id === sugIcon && sugIcon !== 'box' ? 'block' : 'none', pick: () => this.setState({ form: { ...this.state.form, icon: o.id, iconPicked: true } }) }; }) : [];
+    const setF = (k, num) => e => this.setState({ form: { ...this.state.form, [k]: num ? Number(e.target.value) : e.target.value } });
+    return {
+      q: st.q, setQ: e => this.setState({ q: e.target.value }),
+      exportLabel: st.exporting ? 'Preparing…' : st.exportErr ? 'Try again' : 'Export to Excel',
+      doExport: () => { if (st.exporting) return; this.setState({ exporting: true, exportErr: '' });
+        S.exportXlsx(S.exportName('main-inventory'), [{ name: 'Inventory', rows: S.closetRows() }, { name: 'Orders', rows: S.orderRows() }])
+          .catch(e => { this.setState({ exportErr: e.message }); alert(e.message); }).finally(() => this.setState({ exporting: false })); }, stats, noRows: rows.length === 0, rows, shop, noShop: shop.length === 0, orders,
+      openNew: () => this.setState({ form: { name: '', cat: '', unit: 'each', qty: 0, th: 5, vendor: 'Amazon', url: '', pk: 'each', pn: 1, price: 0 } }),
+      editing: !!f, formTitle: f && f.id ? 'Edit ' + f.name : 'Add item',
+      iconOpts, iconHint: f && !f.iconPicked && !f.icon ? 'auto-suggested from the name' : 'tap to change', fields: f ? FIELDS.map(([k, label, hint, type]) => ({ label, hint, type, value: f[k] ?? '', set: setF(k, type === 'number') })) : [],
+      packPreview: f ? `1 ${f.pk || 'each'} = ${f.pn || 1} ${f.unit || 'units'}. Receiving 2 adds ${2 * (f.pn || 1)} to stock.` : '',
+      save: e => { e.preventDefault(); if (!f.name.trim()) return; S.saveItem({ ...f, icon: selIcon, iconPicked: undefined, pn: Math.max(1, f.pn || 1) }); this.setState({ form: null }); },
+      close: () => this.setState({ form: null }), stop: e => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>

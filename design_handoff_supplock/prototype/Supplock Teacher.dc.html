@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Caveat:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#f6f1f8;color:#2e0f38;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8351a8}
+a:hover{color:#2e0f38}
+input,textarea,select{font:inherit;color:inherit}
+input:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid #b45dbb;outline-offset:2px}
+</style>
+<script src="./icons.js"></script>
+<script src="./blocks.js"></script>
+</helmet>
+<div data-screen-label="Teacher" style="min-height:100vh">
+  <header style="background:#fff;border-bottom:2px solid #e6dbef;position:sticky;top:0;z-index:10">
+    <div style="max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <a href="Supplock Landing.dc.html" style="display:flex;align-items:center;gap:8px;color:#2e0f38;text-decoration:none">
+        <svg width="24" height="24" viewBox="0 0 30 30"><polygon points="15,1 18.5,11.5 29,15 18.5,18.5 15,29 11.5,18.5 1,15 11.5,11.5" fill="#8351a8"></polygon></svg>
+        <span style="font-family:'Young Serif',serif;font-size:21px">Supplock</span>
+      </a>
+      <span style="display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:999px;background:#f1eaf5;font-weight:700;font-size:14px;max-width:260px"><sc-if value="{{ hasLogo }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="School logo" style="flex:none;width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff;display:block;background-image:url({{ logoUrl }});background-size:contain;background-repeat:no-repeat;background-position:center"></span></sc-if><sc-if value="{{ noLogo }}" hint-placeholder-val="{{ true }}"><span style="flex:none;width:32px;height:32px;border-radius:11px;background:#8351a8;color:#fff;display:grid;place-items:center;font-family:'Young Serif',serif;font-size:17px">{{ initial }}</span></sc-if><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ schoolName }}</span></span>
+      <nav style="display:flex;gap:4px;background:#f1eaf5;border-radius:999px;padding:4px">
+        <button onClick="{{ tabSupplies }}" style="min-height:40px;padding:0 18px;border:none;border-radius:999px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;background:{{ t1bg }};color:{{ t1fg }}">Supplies</button>
+        <button onClick="{{ tabMine }}" style="min-height:40px;padding:0 18px;border:none;border-radius:999px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;background:{{ t2bg }};color:{{ t2fg }}">My requests · {{ myCount }}</button>
+        <button onClick="{{ tabSpaces }}" style="min-height:40px;padding:0 18px;border:none;border-radius:999px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;background:{{ t3bg }};color:{{ t3fg }}">My spaces</button>
+      </nav>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ toggleBell }}" aria-label="Notifications" style="position:relative;width:44px;height:44px;border-radius:14px;border:2px solid #e6dbef;background:#fff;cursor:pointer;display:grid;place-items:center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e0f38" stroke-width="2" stroke-linecap="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 21h4"></path></svg>
+          <sc-if value="{{ unread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:#b45dbb;color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;padding:0 5px">{{ unread }}</span></sc-if>
+        </button>
+        <div style="text-align:right;line-height:1.2"><div style="font-weight:700;font-size:15px">{{ meName }}</div><div style="font-size:13px;color:#5c4766">Teacher · {{ meRoom }}</div></div>
+        <button onClick="{{ toAdmin }}" style="min-height:40px;padding:0 12px;border-radius:12px;border:2px dashed #8351a8;background:transparent;color:#5e3680;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Switch to admin</button>
+        <button onClick="{{ logout }}" style="min-height:40px;padding:0 10px;border:none;background:none;color:#5c4766;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer">Log out</button>
+      </div>
+    </div>
+    <sc-if value="{{ bellOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:20px;top:68px;width:360px;max-width:calc(100vw - 40px);background:#fff;border:2px solid #2e0f38;border-radius:20px;box-shadow:0 6px 0 #2e0f38,0 20px 40px rgba(46,15,56,.2);padding:14px;z-index:30">
+        <div style="font-family:'Young Serif',serif;font-size:18px;margin-bottom:8px">Notifications</div>
+        <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+          <div style="padding:10px 0;border-top:1px solid #efe7f3;font-size:14px;line-height:1.4"><div>{{ n.text }}</div><div style="font-size:12px;color:#5c4766;margin-top:2px">{{ n.when }}</div></div>
+        </sc-for>
+        <sc-if value="{{ noNotes }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Caveat',cursive;font-size:22px;color:#5c4766">nothing new yet</div></sc-if>
+      </div>
+    </sc-if>
+  </header>
+
+  <main style="max-width:1080px;margin:0 auto;padding:28px 20px 80px">
+    <sc-if value="{{ hasPlacements }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:2px solid #8351a8;border-radius:22px;padding:16px 18px;margin-bottom:24px;box-shadow:0 5px 0 #c2abd4">
+        <div style="font-family:'Young Serif',serif;font-size:22px">Where should these go?</div>
+        <div style="font-size:14px;color:#5c4766;margin:2px 0 6px">Your approved items are ready. Pick a space and they'll be added to its inventory.</div>
+        <sc-for list="{{ placements }}" as="p" hint-placeholder-count="1">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #efe7f3">
+            <sl-icon name="{{ p.icon }}" label="{{ p.title }}" size="40"></sl-icon>
+            <div style="flex:1 1 160px;font-weight:700;font-size:16px">{{ p.title }} <span style="font-family:'JetBrains Mono',monospace;font-size:14px">×{{ p.qty }}</span></div>
+            <select value="{{ p.sel }}" onChange="{{ p.setSel }}" aria-label="Space" style="height:44px;max-width:240px;border:2px solid #e6dbef;border-radius:12px;padding:0 10px;font-family:'DM Sans',sans-serif;font-size:15px;background:#fff;color:#2e0f38">
+              <sc-for list="{{ p.opts }}" as="o" hint-placeholder-count="2"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+            </select>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;min-height:44px;cursor:pointer"><input type="checkbox" checked="{{ p.loan }}" onChange="{{ p.toggleLoan }}" style="width:20px;height:20px;accent-color:#8351a8"></input>On loan</label>
+            <button onClick="{{ p.add }}" style="min-height:44px;padding:0 18px;border:none;border-radius:12px;background:#8351a8;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 3px 0 #5e3680">Add</button>
+            <button onClick="{{ p.skip }}" style="min-height:44px;padding:0 6px;border:none;background:none;color:#5c4766;font-family:'DM Sans',sans-serif;font-size:14px;text-decoration:underline;cursor:pointer">Don't add</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ onSpaces }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+        <div>
+          <h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:38px;margin:0;letter-spacing:-0.01em">My spaces</h1>
+          <div style="font-family:'Caveat',cursive;font-size:24px;color:#5e3680;transform:rotate(-1.5deg);transform-origin:left;margin-top:2px">keep counts current, or take a full inventory</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <sc-for list="{{ mySpaces }}" as="s" hint-placeholder-count="2">
+          <button onClick="{{ s.pick }}" style="min-height:46px;padding:0 16px;border-radius:999px;border:2px solid {{ s.border }};background:{{ s.bg }};color:{{ s.fg }};font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">{{ s.label }}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ hasSpaces }}" hint-placeholder-val="{{ true }}">
+        <dc-import name="SpaceInventory" space-id="{{ curSpaceId }}" role="teacher" hint-size="100%,560px"></dc-import>
+      </sc-if>
+      <sc-if value="{{ noSpaces }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'Caveat',cursive;font-size:28px;color:#5e3680;padding:30px 0">no spaces yet. Your admin can assign you one.</div>
+      </sc-if>
+    </sc-if>
+    <sc-if value="{{ onSupplies }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px">
+        <div style="position:relative;padding-right:120px">
+          <sl-block deco="1" color="lavender" tilt="-9" float="3" radius="16" style="position:absolute;right:52px;top:-6px;width:48px;height:48px"></sl-block>
+          <sl-block deco="1" mhide="1" color="teal" tilt="10" float="1" radius="12" style="position:absolute;right:6px;top:34px;width:34px;height:34px"></sl-block>
+          <h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:38px;margin:0;letter-spacing:-0.01em">What do you need?</h1>
+          <div style="font-family:'Caveat',cursive;font-size:24px;color:#8351a8;transform:rotate(-1.5deg);transform-origin:left;margin-top:2px">tap Request, pick a number, done</div>
+        </div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding-bottom:6px">
+          <sl-block color="orchid" tilt="-4" float="0" radius="20"><button onClick="{{ openCustom }}" style="min-height:58px;padding:0 24px;border:none;border-radius:20px;background:none;color:inherit;font:inherit;font-weight:700;font-size:17px;cursor:pointer">+ Request something not listed</button></sl-block>
+          <button onClick="{{ openLaptop }}" style="min-height:52px;padding:0 20px;border:none;border-radius:16px;background:#1a2c54;color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 5px 0 #0f1b37">Request laptops</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px">
+        <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search supplies" aria-label="Search supplies" style="flex:1 1 240px;height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 16px;background:#fff;font-size:16px"></input>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.pick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:14px;font-weight:700;cursor:pointer">{{ c.name }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ items }}" as="it" hint-placeholder-count="8">
+          <div data-wiggle="1" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:22px;padding:10px 12px 10px 12px;border:2px solid #efe7f3">
+            <sl-icon name="{{ it.iconName }}" label="{{ it.name }}" size="56"></sl-icon>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:18px">{{ it.name }}</div>
+              <div style="font-size:14px;color:#5c4766">{{ it.cat }}</div>
+            </div>
+            <span style="flex:none;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;color:{{ it.fg }};background:{{ it.bg }}">{{ it.label }}</span>
+            <button onClick="{{ it.open }}" style="flex:none;min-width:130px;height:56px;border:none;border-radius:18px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:18px;cursor:pointer;box-shadow:0 5px 0 #5e3680" style-hover="background:#7445a0" style-active="transform:translateY(3px);box-shadow:0 2px 0 #5e3680">Request</button>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 44px;gap:8px">
+            <sl-block deco="1" color="lavender" tilt="-10" float="2" radius="16" style="position:absolute;left:10%;top:22px;width:46px;height:46px"></sl-block>
+            <sl-block deco="1" color="teal" tilt="8" float="4" radius="12" style="position:absolute;right:12%;top:46px;width:32px;height:32px"></sl-block>
+            <sl-block deco="1" mhide="1" color="pink" tilt="6" float="1" radius="14" style="position:absolute;right:6%;bottom:14px;width:58px;height:24px"></sl-block>
+            <sl-icon name="box" size="120" variant="detail"></sl-icon>
+            <div style="font-family:'Caveat',cursive;font-size:30px;font-weight:700;color:#5e3680">hmm, not on the shelf</div>
+            <div style="font-size:16px;color:#3d2547;max-width:380px">Ask for it anyway and the office will order it.</div>
+            <button onClick="{{ openCustom }}" style="margin-top:8px;min-height:52px;padding:0 20px;border:none;border-radius:16px;background:#a54fac;color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 5px 0 #7d3484">Request something not listed</button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ onMine }}" hint-placeholder-val="{{ false }}">
+      <h1 style="font-family:'Young Serif',serif;font-weight:400;font-size:38px;margin:0 0 20px">My requests</h1>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ mine }}" as="r" hint-placeholder-count="4">
+          <div style="background:#fff;border-radius:22px;padding:16px 18px;border:2px solid #efe7f3">
+            <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+              <div style="flex:1;min-width:200px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:700;font-size:18px">{{ r.title }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">×{{ r.qty }}</span>
+                  <sc-if value="{{ r.isCustom }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;color:#6e2c74;background:#f1dff3;padding:3px 8px;border-radius:8px">Custom</span></sc-if>
+                </div>
+                <div style="font-size:14px;color:#5c4766;margin-top:3px">{{ r.meta }}</div>
+              </div>
+              <span style="font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;color:{{ r.fg }};background:{{ r.bg }}">{{ r.label }}</span>
+            </div>
+            <sc-if value="{{ r.isCustom }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:14px">
+                <sc-for list="{{ r.steps }}" as="s" hint-placeholder-count="4">
+                  <div><div style="height:8px;border-radius:999px;background:{{ s.c }}"></div><div style="font-size:12px;margin-top:5px;font-weight:{{ s.w }};color:#3d2547">{{ s.name }}</div></div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noMine }}" hint-placeholder-val="{{ false }}"><div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 44px;gap:8px">
+            <sl-block deco="1" color="lavender" tilt="-10" float="2" radius="16" style="position:absolute;left:10%;top:22px;width:46px;height:46px"></sl-block>
+            <sl-block deco="1" color="teal" tilt="8" float="4" radius="12" style="position:absolute;right:12%;top:46px;width:32px;height:32px"></sl-block>
+            <sl-block deco="1" mhide="1" color="pink" tilt="6" float="1" radius="14" style="position:absolute;right:6%;bottom:14px;width:58px;height:24px"></sl-block>
+            <sl-icon name="shelf" size="120" variant="detail"></sl-icon>
+            <div style="font-family:'Caveat',cursive;font-size:30px;font-weight:700;color:#5e3680">no requests yet</div>
+            <div style="font-size:16px;color:#3d2547;max-width:380px">Everything you ask for shows up here, with its status. Head to Supplies to make your first request.</div>
+          </div></sc-if>
+      </div>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeBg }}" style="position:fixed;inset:0;background:rgba(46,15,56,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50">
+      <form onSubmit="{{ submit }}" onClick="{{ stop }}" style="width:100%;max-width:440px;max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:28px;padding:24px;box-shadow:0 8px 0 #c2abd4,0 30px 60px rgba(46,15,56,.3);display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;text-align:center;padding:26px 0 8px;display:flex;flex-direction:column;align-items:center;gap:16px">
+            <sl-block deco="1" settle="0.2" color="lavender" tilt="-10" float="2" radius="12" style="position:absolute;left:4px;top:8px;width:34px;height:34px"></sl-block>
+            <sl-block deco="1" settle="0.35" color="pink" tilt="8" float="4" radius="10" style="position:absolute;right:8px;top:20px;width:26px;height:26px"></sl-block>
+            <sl-block deco="1" settle="0.5" mhide="1" color="navy" tilt="-6" float="1" radius="8" style="position:absolute;right:46px;top:84px;width:20px;height:20px"></sl-block>
+            <sl-block deco="1" settle="0" color="teal" tilt="-6" float="0" radius="32" style="width:110px;height:110px;display:grid;place-items:center;font-size:62px;font-weight:700;line-height:1">✓</sl-block>
+            <div style="border:4px double #8351a8;border-radius:10px;padding:8px 14px;color:#5e3680;font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;transform:rotate(-3deg)">Request sent — awaiting approval</div>
+            <div style="font-size:15px;color:#3d2547">{{ sentLine }}</div>
+          </div>
+          <button type="button" onClick="{{ close }}" style="height:54px;border:none;border-radius:16px;background:#2e0f38;color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer">Done</button>
+        </sc-if>
+        <sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div><div style="font-family:'Young Serif',serif;font-size:26px;line-height:1.1">{{ mTitle }}</div><div style="font-size:14px;color:#5c4766;margin-top:4px">{{ mSub }}</div></div>
+            <button type="button" onClick="{{ close }}" aria-label="Close" style="flex:none;width:44px;height:44px;border-radius:14px;border:none;background:#f1eaf5;font-size:20px;cursor:pointer;color:#2e0f38">×</button>
+          </div>
+          <sc-if value="{{ isLaptop }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f1eaf5;border-radius:16px;padding:4px">
+              <button type="button" onClick="{{ setTemp }}" style="min-height:44px;border:none;border-radius:12px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;background:{{ tempBg }};color:{{ tempFg }}">Temporary checkout</button>
+              <button type="button" onClick="{{ setFull }}" style="min-height:44px;border:none;border-radius:12px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;background:{{ fullBg }};color:{{ fullFg }}">Full-time class use</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Item name<input value="{{ f.name }}" onChange="{{ on.name }}" placeholder="e.g. Wobble cushions" style="height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 14px;font-weight:400;font-size:16px"></input></label>
+          </sc-if>
+          <sc-if value="{{ showQty }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#f1eaf5;border-radius:18px;padding:8px">
+              <button type="button" onClick="{{ dec }}" aria-label="Decrease" style="width:52px;height:52px;border:none;border-radius:14px;background:#fff;font-size:24px;font-weight:700;cursor:pointer;color:#2e0f38">−</button>
+              <div style="text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700">{{ f.qty }}</div><div style="font-size:13px;color:#5c4766">{{ unitLabel }}</div></div>
+              <button type="button" onClick="{{ inc }}" aria-label="Increase" style="width:52px;height:52px;border:none;border-radius:14px;background:#fff;font-size:24px;font-weight:700;cursor:pointer;color:#2e0f38">+</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ lowNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#6e2c74;background:#f1dff3;padding:10px 12px;border-radius:12px">{{ lowNote }}</div></sc-if>
+          <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Product link<input value="{{ f.url }}" onChange="{{ on.url }}" placeholder="Amazon, Walmart, Target…" style="height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 14px;font-weight:400;font-size:16px"></input></label>
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Needed by<input type="date" value="{{ f.needed }}" onChange="{{ on.needed }}" style="height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 14px;font-weight:400;font-family:'JetBrains Mono',monospace;font-size:15px"></input></label>
+          </sc-if>
+          <sc-if value="{{ showDates }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">From<input type="date" value="{{ f.from }}" onChange="{{ on.from }}" style="height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 10px;font-weight:400;font-family:'JetBrains Mono',monospace;font-size:14px"></input></label>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">To<input type="date" value="{{ f.to }}" onChange="{{ on.to }}" style="height:48px;border:2px solid #e6dbef;border-radius:14px;padding:0 10px;font-weight:400;font-family:'JetBrains Mono',monospace;font-size:14px"></input></label>
+            </div>
+          </sc-if>
+          <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Classroom <span style="font-weight:400;color:#5c4766;font-size:13px;margin-top:-6px">{{ roomHint }}</span><input value="{{ f.room }}" onChange="{{ on.room }}" placeholder="{{ meRoom }}" style="height:48px;border:2px solid {{ roomBorder }};border-radius:14px;padding:0 14px;font-weight:400;font-size:16px"></input></label>
+          <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Note <span style="font-weight:400;color:#5c4766;font-size:13px;margin-top:-6px">optional</span><textarea value="{{ f.note }}" onChange="{{ on.note }}" rows="2" style="border:2px solid #e6dbef;border-radius:14px;padding:10px 14px;font-weight:400;font-size:16px;resize:vertical"></textarea></label>
+          <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><div style="color:#8c1c45;font-size:14px;font-weight:700">{{ err }}</div></sc-if>
+          <button type="submit" style="height:58px;border:none;border-radius:18px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:18px;cursor:pointer;box-shadow:0 5px 0 #5e3680">Send request</button>
+        </sc-if>
+      </form>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TILE = { Art: ['#b45dbb', '#8a3f90'], Writing: ['#8351a8', '#5e3680'], Cleaning: ['#4d7b93', '#335a6e'], Paper: ['#1a2c54', '#0f1b37'], Classroom: ['#2e0f38', '#1a0621'], Tech: ['#5e3680', '#3f2257'] };
+const blank = () => ({ qty: 1, room: '', note: '', name: '', url: '', needed: '', from: '', to: '', type: 'temp' });
+class Component extends DCLogic {
+  state = { tab: 'supplies', q: '', cat: 'All', modal: null, itemId: null, f: blank(), err: '', bell: false, sentLine: '' };
+  componentDidMount() {
+    import(new URL('./store.js', location.href).href).then(m => {
+      this.S = m; const u = m.me(); if (!u || u.role !== 'teacher') { const t = m.firstTeacher(); if (!t) { location.href = 'Supplock Login.dc.html'; return; } m.login(t.id); }
+      this.un = m.subscribe(() => this.forceUpdate()); this.forceUpdate();
+    });
+  }
+  componentWillUnmount() { this.un && this.un(); }
+  open(modal, itemId) { const S = this.S; const f = blank(); if (modal === 'laptop') { f.from = S.isoPlus(1); f.to = S.isoPlus(3); } this.setState({ modal, itemId, f, err: '' }); }
+  setF(k, v) { this.setState(s => ({ f: { ...s.f, [k]: v }, err: '' })); }
+  submit(e) {
+    e.preventDefault(); const S = this.S, f = this.state.f, m = this.state.modal; const room = f.room.trim();
+    if (m === 'supply') { const it = S.item(this.state.itemId); S.requestSupply(it.id, f.qty, room, f.note.trim()); this.setState({ modal: 'sent', sentLine: `${f.qty} ${it.unit} of ${it.name}. You'll get a notice when it's approved.` }); }
+    else if (m === 'custom') { if (!f.name.trim()) return this.setState({ err: 'Add the item name.' }); S.requestCustom({ name: f.name.trim(), qty: f.qty, url: f.url.trim(), needed: f.needed, room, note: f.note.trim() }); this.setState({ modal: 'sent', sentLine: `${f.name.trim()} × ${f.qty}, marked as a custom request.` }); }
+    else { if (f.type === 'full' && !room) return this.setState({ err: 'Classroom is required for full-time class use.' }); if (f.type === 'temp' && (!f.from || !f.to)) return this.setState({ err: 'Pick the checkout dates.' }); S.requestLaptop({ type: f.type, qty: f.qty, from: f.from, to: f.to, room, note: f.note.trim() }); this.setState({ modal: 'sent', sentLine: f.type === 'full' ? `1 laptop for ${room}, full-time.` : `${f.qty} laptops, ${S.fmtDate(f.from)} – ${S.fmtDate(f.to)}.` }); }
+  }
+  spaceVals(S, db, u) {
+    const st = this.state;
+    if (!db || !u || !S.spacesOf) return { mySpaces: [], placements: [], hasPlacements: false, hasSpaces: false, noSpaces: false, curSpaceId: '' };
+    const mySp = S.spacesOf(u.id);
+    const cur = mySp.find(x => x.id === st.spaceId) || mySp[0];
+    const placements = S.pendingPlacements(u.id).map(r => {
+      const sel = (st.placeSel || {})[r.id] || (mySp[0] || {}).id || ''; const loan = (st.placeLoan || {})[r.id] ?? (r.kind === 'laptop');
+      const it = r.kind === 'supply' ? S.item(r.itemId) : null;
+      return { id: r.id, title: S.reqTitle(r), qty: r.kind === 'laptop' ? (r.tags || []).length : r.qty, icon: it ? (it.icon || '') : r.kind === 'laptop' ? 'laptop' : '', sel, loan,
+        opts: mySp.map(x => ({ id: x.id, name: x.name })),
+        setSel: e => this.setState({ placeSel: { ...this.state.placeSel, [r.id]: e.target.value } }),
+        toggleLoan: () => this.setState({ placeLoan: { ...this.state.placeLoan, [r.id]: !loan } }),
+        add: () => { if (sel) { S.place(r.id, sel, loan); this.setState({ tab: 'spaces', spaceId: sel }); } }, skip: () => S.place(r.id, null) };
+    });
+    return {
+      mySpaces: mySp.map(x => { const on = cur && x.id === cur.id; const low = S.spaceItems(x.id).filter(i => S.spaceLevel(i) !== 'ok').length;
+        return { label: x.name + (low ? ' · ' + low + ' low' : ''), border: on ? '#2e0f38' : '#e6dbef', bg: on ? '#2e0f38' : '#fff', fg: on ? '#fff' : '#2e0f38', pick: () => this.setState({ spaceId: x.id }) }; }),
+      hasSpaces: !!cur, noSpaces: !cur, curSpaceId: cur ? cur.id : '', placements, hasPlacements: placements.length > 0 && mySp.length > 0
+    };
+  }
+  renderVals() {
+    const S = this.S, st = this.state; const db = S ? S.get() : null; const u = S && S.me();
+    const sc = S && S.school(); const schoolBits = { schoolName: sc ? sc.name : '', logo: sc ? sc.logo : '', logoUrl: sc && sc.logo ? '"' + S.logoSrc(sc.logo) + '"' : 'none', hasLogo: !!(sc && sc.logo), noLogo: !(sc && sc.logo), initial: sc ? sc.name.trim()[0].toUpperCase() : '' };
+    const sel = (on) => ({ bg: on ? '#2e0f38' : 'transparent', fg: on ? '#fff' : '#2e0f38' });
+    const allItems = db ? db.items : [];
+    const catNames = ['All', ...new Set(allItems.map(i => i.cat))];
+    const items = allItems.filter(i => (st.cat === 'All' || i.cat === st.cat) && i.name.toLowerCase().includes(st.q.toLowerCase())).map(i => {
+      const L = S.LEVEL[S.level(i) === 'critical' ? 'low' : S.level(i)]; const t = TILE[i.cat] || TILE.Classroom;
+      return { ...i, iconName: i.icon || '', abbr: i.name.split(' ').map(w => w[0]).join('').replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase(), tile: t[0], tileEdge: t[1], label: L.label, fg: L.fg, bg: L.bg, open: () => this.open('supply', i.id) };
+    });
+    const mine = db && u ? db.requests.filter(r => r.teacherId === u.id).sort((a, b) => b.ts - a.ts).map(r => {
+      const s = S.statusOf(r); const order = ['pending', 'approved', 'ordered', 'delivered']; const idx = order.indexOf(r.status);
+      const meta = [S.fmtStamp(r.ts), r.room, r.kind === 'laptop' && r.type === 'temp' ? `${S.fmtDate(r.from)} – ${S.fmtDate(r.to)}` : '', r.tags && r.tags.length ? r.tags.join(', ') : '', r.kind === 'custom' && r.needed ? 'needed by ' + S.fmtDate(r.needed) : ''].filter(Boolean).join(' · ');
+      return { ...r, title: S.reqTitle(r), isCustom: r.kind === 'custom', meta, label: s.label, fg: s.fg, bg: s.bg,
+        steps: ['Pending', 'Approved (Pending Order)', 'Ordered', 'Delivered'].map((name, i) => ({ name, c: r.status === 'denied' ? '#d9cfe0' : i <= idx ? '#8351a8' : '#e6dbef', w: i === idx ? 700 : 400 })) };
+    }) : [];
+    const notes = db && u ? db.notes.filter(n => n.to === u.id) : [];
+    const m = st.modal, f = st.f; const it = m === 'supply' && S ? S.item(st.itemId) : null; const lc = S ? S.lapCounts() : { available: 0 };
+    const tSel = sel(f.type === 'temp'), fSel = sel(f.type === 'full');
+    return { ...schoolBits,
+      meName: u ? u.name : '', meRoom: u ? u.room : '', myCount: mine.length,
+      onSupplies: st.tab === 'supplies', onMine: st.tab === 'mine', onSpaces: st.tab === 'spaces',
+      t3bg: sel(st.tab === 'spaces').bg, t3fg: sel(st.tab === 'spaces').fg, tabSpaces: () => this.setState({ tab: 'spaces', bell: false }),
+      ...this.spaceVals(S, db, u),
+      t1bg: sel(st.tab === 'supplies').bg, t1fg: sel(st.tab === 'supplies').fg, t2bg: sel(st.tab === 'mine').bg, t2fg: sel(st.tab === 'mine').fg,
+      tabSupplies: () => this.setState({ tab: 'supplies' }), tabMine: () => this.setState({ tab: 'mine' }),
+      unread: notes.filter(n => !n.read).length, bellOpen: st.bell, notes: notes.slice(0, 8).map(n => ({ ...n, when: S.fmtStamp(n.ts) })), noNotes: notes.length === 0,
+      toggleBell: () => { if (!st.bell && u) S.markRead(u.id); this.setState({ bell: !st.bell }); },
+      toAdmin: () => { S.login('admin'); location.href = 'Supplock Admin.dc.html'; },
+      logout: () => { S.logout(); location.href = 'Supplock Login.dc.html'; },
+      q: st.q, setQ: e => this.setState({ q: e.target.value }),
+      cats: catNames.map(c => ({ name: c, border: c === st.cat ? '#2e0f38' : '#e6dbef', bg: c === st.cat ? '#2e0f38' : '#fff', fg: c === st.cat ? '#fff' : '#2e0f38', pick: () => this.setState({ cat: c }) })),
+      items, noItems: !!db && items.length === 0, mine, noMine: !!db && mine.length === 0,
+      openCustom: () => this.open('custom'), openLaptop: () => this.open('laptop'),
+      modalOpen: !!m, isSent: m === 'sent', isForm: !!m && m !== 'sent', isLaptop: m === 'laptop', isCustom: m === 'custom',
+      showQty: m === 'supply' || m === 'custom' || (m === 'laptop' && f.type === 'temp'), showDates: m === 'laptop' && f.type === 'temp',
+      mTitle: m === 'supply' && it ? it.name : m === 'custom' ? 'Request something not listed' : 'Request laptops',
+      mSub: m === 'supply' && it ? S.LEVEL[S.level(it)].label + ' · counted in ' + it.unit : m === 'custom' ? 'The office will order it for you' : lc.available + ' laptops available right now',
+      unitLabel: it ? it.unit : m === 'laptop' ? 'laptops' : 'units',
+      lowNote: it && f.qty > it.qty ? `Only ${it.qty} available right now. You can still send it; the office will review.` : '',
+      tempBg: tSel.bg, tempFg: tSel.fg, fullBg: fSel.bg, fullFg: fSel.fg,
+      setTemp: () => this.setF('type', 'temp'), setFull: () => this.setF('type', 'full'),
+      roomHint: m === 'laptop' && f.type === 'full' ? 'required — the laptop stays in this room' : 'optional',
+      roomBorder: st.err && m === 'laptop' && f.type === 'full' && !f.room.trim() ? '#8c1c45' : '#e6dbef',
+      f, err: st.err, sentLine: st.sentLine,
+      on: { name: e => this.setF('name', e.target.value), url: e => this.setF('url', e.target.value), needed: e => this.setF('needed', e.target.value), from: e => this.setF('from', e.target.value), to: e => this.setF('to', e.target.value), room: e => this.setF('room', e.target.value), note: e => this.setF('note', e.target.value) },
+      dec: () => this.setF('qty', Math.max(1, f.qty - 1)), inc: () => this.setF('qty', Math.min(999, f.qty + 1)),
+      submit: e => this.submit(e), close: () => this.setState({ modal: null }), closeBg: () => this.setState({ modal: null }), stop: e => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>

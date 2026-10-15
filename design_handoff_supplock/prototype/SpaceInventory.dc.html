@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="background:#fff;border:2px solid #e6dbef;border-radius:24px;padding:20px 22px;font-family:'DM Sans',sans-serif;color:#2e0f38">
+  <sc-if value="{{ missing }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:40px 10px;text-align:center;font-family:'Caveat',cursive;font-size:28px;color:#5e3680">pick a space to see what's in it</div>
+  </sc-if>
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between">
+      <div style="min-width:0">
+        <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5e3680">{{ kindLabel }}</div>
+        <h2 style="font-family:'Young Serif',serif;font-weight:400;font-size:28px;line-height:1.1;margin:2px 0 4px">{{ name }}</h2>
+        <div style="font-size:14px;color:#5c4766">{{ sub }}</div>
+      </div>
+      <sc-if value="{{ idle }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ startCount }}" style="white-space:nowrap;min-height:48px;padding:0 18px;border:none;border-radius:16px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #5e3680">Take inventory</button>
+          <button onClick="{{ doExport }}" style="white-space:nowrap;min-height:48px;padding:0 16px;border:2px solid #4d7b93;border-radius:16px;background:#fff;color:#2f4f60;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #4d7b93;display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>{{ exportLabel }}</button>
+          <button onClick="{{ openNew }}" style="white-space:nowrap;min-height:48px;padding:0 16px;border:2px solid #2e0f38;border-radius:16px;background:#fff;color:#2e0f38;font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #2e0f38">+ Add item</button>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px;font-size:13px;font-weight:700">
+      <span style="white-space:nowrap;padding:5px 11px;border-radius:999px;background:#f1eaf5">{{ nItems }} items</span>
+      <span style="white-space:nowrap;padding:5px 11px;border-radius:999px;background:{{ lowBg }};color:{{ lowFg }}">{{ nLow }} low</span>
+      <span style="white-space:nowrap;padding:5px 11px;border-radius:999px;background:#dde2ee;color:#1a2c54">{{ nLoan }} on loan</span>
+      <span style="white-space:nowrap;padding:5px 11px;border-radius:999px;background:#dce8ee;color:#1a2c54">{{ lastCounted }}</span>
+    </div>
+
+    <sc-if value="{{ justSaved }}" hint-placeholder-val="{{ false }}">
+      <div role="status" style="margin:10px 0;padding:10px 14px;border-radius:14px;background:#dce8ee;color:#1a2c54;font-weight:700;font-size:14px">{{ justSaved }}</div>
+    </sc-if>
+
+    <sc-if value="{{ counting }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#1a2c54;color:#f6f1f8;border-radius:16px;padding:12px 16px;margin:14px 0 6px">
+        <div style="flex:1 1 220px"><div style="font-weight:700;font-size:16px">Taking inventory</div><div style="font-size:14px;color:#dde2ee">Count what's actually there and type it in. {{ changedLine }}</div></div>
+        <button onClick="{{ saveCount }}" style="min-height:46px;padding:0 18px;border:none;border-radius:14px;background:#fff;color:#1a2c54;font:inherit;font-weight:700;font-size:15px;cursor:pointer">Save count</button>
+        <button onClick="{{ cancelCount }}" style="min-height:46px;padding:0 8px;border:none;background:none;color:#f6f1f8;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer">Cancel</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+      <form onSubmit="{{ saveItem }}" style="border:2px solid #2e0f38;border-radius:18px;padding:16px;margin:14px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;background:#faf6fc">
+        <div style="grid-column:1 / -1;font-family:'Young Serif',serif;font-size:20px">{{ formTitle }}</div>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700;grid-column:1 / -1">Name<input value="{{ f.name }}" onChange="{{ on.name }}" placeholder="e.g. Microscopes" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font:inherit;font-weight:400;font-size:15px;background:#fff"></input></label>
+        <div style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700">Category
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ catOpts }}" as="c" hint-placeholder-count="4">
+              <button type="button" onClick="{{ c.pick }}" style="min-height:42px;padding:0 14px;border-radius:999px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:14px;font-weight:700;cursor:pointer">{{ c.name }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700">Quantity<input type="number" min="0" value="{{ f.qty }}" onChange="{{ on.qty }}" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:15px;background:#fff"></input></label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700">Unit<input value="{{ f.unit }}" onChange="{{ on.unit }}" placeholder="e.g. boxes" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font:inherit;font-weight:400;font-size:15px;background:#fff"></input></label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700">Low alert at <span style="font-weight:400;font-size:12px;color:#5c4766;margin-top:-4px">optional · 0 = no alert</span><input type="number" min="0" value="{{ f.th }}" onChange="{{ on.th }}" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:15px;background:#fff"></input></label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;min-height:46px;cursor:pointer;grid-column:1 / -1"><input type="checkbox" checked="{{ f.loan }}" onChange="{{ on.loan }}" style="width:22px;height:22px;accent-color:#8351a8"></input>On loan from the main closet</label>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:700;grid-column:1 / -1">Note <span style="font-weight:400;font-size:12px;color:#5c4766;margin-top:-4px">optional</span><input value="{{ f.note }}" onChange="{{ on.note }}" placeholder="e.g. 2 need new bulbs" style="height:46px;border:2px solid #e6dbef;border-radius:12px;padding:0 12px;font:inherit;font-weight:400;font-size:15px;background:#fff"></input></label>
+        <sc-if value="{{ formErr }}" hint-placeholder-val="{{ false }}"><div style="grid-column:1 / -1;color:#8c1c45;font-size:14px;font-weight:700">{{ formErr }}</div></sc-if>
+        <div style="grid-column:1 / -1;display:flex;gap:10px;flex-wrap:wrap">
+          <button type="submit" style="min-height:48px;padding:0 20px;border:none;border-radius:14px;background:#8351a8;color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #5e3680">Save item</button>
+          <sc-if value="{{ canRemove }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ removeItem }}" style="min-height:48px;padding:0 14px;border:2px solid #8c1c45;border-radius:14px;background:#fff;color:#8c1c45;font:inherit;font-weight:700;font-size:15px;cursor:pointer">Remove</button></sc-if>
+          <button type="button" onClick="{{ closeForm }}" style="min-height:48px;padding:0 8px;border:none;background:none;color:#5c4766;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer">Cancel</button>
+        </div>
+      </form>
+    </sc-if>
+
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px">
+      <sc-for list="{{ filters }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="min-height:40px;padding:0 13px;border-radius:999px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font:inherit;font-size:13px;font-weight:700;cursor:pointer">{{ c.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+        <div data-wiggle="1" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #efe7f3;flex-wrap:wrap">
+          <sl-icon name="{{ r.icon }}" label="{{ r.name }}" size="44"></sl-icon>
+          <div style="flex:1 1 170px;min-width:0">
+            <div style="font-weight:700;font-size:16px">{{ r.name }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:#5c4766;margin-top:3px">
+              <span>{{ r.cat }}</span>
+              <sc-if value="{{ r.loan }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;color:#1a2c54;background:#dde2ee;padding:2px 8px;border-radius:8px">On loan from main closet</span></sc-if>
+              <sc-if value="{{ r.lowLabel }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;color:{{ r.lowFg }};background:{{ r.lowBgc }};padding:2px 8px;border-radius:8px">{{ r.lowLabel }}</span></sc-if>
+              <sc-if value="{{ r.note }}" hint-placeholder-val="{{ false }}"><span>· {{ r.note }}</span></sc-if>
+            </div>
+          </div>
+          <sc-if value="{{ r.idle }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:4px;background:#f1eaf5;border-radius:14px;padding:3px">
+              <button onClick="{{ r.minus }}" aria-label="One less" style="width:44px;height:44px;border:none;border-radius:11px;background:#fff;font-size:20px;font-weight:700;cursor:pointer;color:#2e0f38">−</button>
+              <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;min-width:44px;text-align:center">{{ r.qty }}</span>
+              <button onClick="{{ r.plus }}" aria-label="One more" style="width:44px;height:44px;border:none;border-radius:11px;background:#fff;font-size:20px;font-weight:700;cursor:pointer;color:#2e0f38">+</button>
+            </div>
+            <span style="font-size:13px;color:#5c4766;min-width:54px">{{ r.unit }}</span>
+            <button onClick="{{ r.edit }}" style="min-height:44px;padding:0 14px;border:2px solid #2e0f38;border-radius:12px;background:#fff;color:#2e0f38;font:inherit;font-weight:700;font-size:14px;cursor:pointer">Edit</button>
+          </sc-if>
+          <sc-if value="{{ r.counting }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px;color:#5c4766">on record <b style="font-family:'JetBrains Mono',monospace;color:#2e0f38">{{ r.qty }}</b></span>
+            <input type="number" min="0" value="{{ r.draft }}" onChange="{{ r.setDraft }}" aria-label="Counted" style="width:96px;height:46px;border:2px solid #8351a8;border-radius:12px;padding:0 10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;background:#fff;color:#2e0f38"></input>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;min-width:40px;color:{{ r.diffC }}">{{ r.diff }}</span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 20px;gap:8px">
+        <sl-block deco="1" color="lavender" tilt="-10" float="2" radius="16" style="position:absolute;left:12%;top:16px;width:44px;height:44px"></sl-block>
+        <sl-block deco="1" mhide="1" color="teal" tilt="8" float="4" radius="12" style="position:absolute;right:14%;top:40px;width:30px;height:30px"></sl-block>
+        <sl-icon name="shelf" size="110" variant="detail"></sl-icon>
+        <div style="font-family:'Caveat',cursive;font-size:30px;font-weight:700;color:#5e3680">{{ emptyTitle }}</div>
+        <div style="font-size:15px;color:#3d2547;max-width:360px">{{ emptyMsg }}</div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top:22px;border-top:2px dashed #e6dbef;padding-top:16px">
+      <h3 style="font-family:'Young Serif',serif;font-weight:400;font-size:20px;margin:0 0 4px">Inventory counts</h3>
+      <sc-for list="{{ history }}" as="c" hint-placeholder-count="2">
+        <div style="border-top:1px solid #efe7f3">
+          <button onClick="{{ c.toggle }}" aria-expanded="{{ c.open }}" style="width:100%;min-height:48px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:none;border:none;padding:6px 0;font:inherit;cursor:pointer;color:#2e0f38;text-align:left">
+            <span style="font-size:15px"><b>{{ c.date }}</b> · {{ c.by }}</span>
+            <span style="font-size:14px;color:#5c4766">{{ c.summary }} {{ c.arrow }}</span>
+          </button>
+          <sc-if value="{{ c.open }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 0 10px">
+              <div style="font-size:13px;color:#5c4766;margin-bottom:4px">{{ c.compare }}</div>
+              <sc-for list="{{ c.lines }}" as="l" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto 56px;gap:12px;font-size:14px;padding:5px 0;border-bottom:1px dotted #e6dbef">
+                  <span>{{ l.name }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace">{{ l.text }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;color:{{ l.c }}">{{ l.diff }}</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ c.noLines }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;padding:4px 0">No changes.</div></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;color:#5c4766;padding:6px 0">No counts yet. Tap Take inventory to record the first one.</div></sc-if>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;900px&quot;,&quot;height&quot;:&quot;900px&quot;},&quot;spaceId&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;sp-t1&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;teacher&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;teacher&quot;,&quot;tsType&quot;:&quot;'teacher'|'admin'&quot;}}">
+const CATS = ['Supplies', 'Equipment', 'Books', 'Furniture'];
+class Component extends DCLogic {
+  state = { filter: 'All', form: null, formErr: '', counting: false, drafts: {}, open: null, saved: '' };
+  componentDidMount() { import(new URL('./store.js', location.href).href).then(m => { this.S = m; this.un = m.subscribe(() => this.forceUpdate()); this.forceUpdate(); }); }
+  componentDidUpdate(pp) { if (pp.spaceId !== this.props.spaceId) this.setState({ counting: false, form: null, drafts: {}, open: null, saved: '', filter: 'All' }); }
+  componentWillUnmount() { this.un && this.un(); clearTimeout(this.st); }
+  flash(msg) { this.setState({ saved: msg }); clearTimeout(this.st); this.st = setTimeout(() => this.setState({ saved: '' }), 3500); }
+  renderVals() {
+    const S = this.S, st = this.state; const sid = this.props.spaceId; const isAdmin = this.props.role === 'admin';
+    const sp = S && sid ? S.space(sid) : null;
+    if (!sp) return { missing: !!S, ready: false, rows: [], history: [], filters: [], catOpts: [], f: {}, on: {} };
+    const items = S.spaceItems(sid);
+    const owner = S.user(sp.ownerId).name;
+    const sel = (on) => ({ border: on ? '#2e0f38' : '#e6dbef', bg: on ? '#2e0f38' : '#fff', fg: on ? '#fff' : '#2e0f38' });
+    const fl = st.filter;
+    const shown = items.filter(i => fl === 'All' || (fl === 'On loan' ? i.loan : fl === 'Low' ? S.spaceLevel(i) !== 'ok' : i.cat === fl))
+      .sort((a, b) => CATS.indexOf(a.cat) - CATS.indexOf(b.cat) || a.name.localeCompare(b.name));
+    const nLow = items.filter(i => S.spaceLevel(i) !== 'ok').length;
+    const counts = S.spaceCounts(sid);
+    const drafts = st.drafts;
+    const rows = shown.map(i => {
+      const lv = S.spaceLevel(i); const d = drafts[i.id] ?? String(i.qty); const n = Math.max(0, Math.round(Number(d) || 0)); const diff = n - i.qty;
+      return { ...i, idle: !st.counting, counting: st.counting,
+        lowLabel: lv === 'out' ? 'Out · alert at ' + i.th : lv === 'low' ? 'Low · alert at ' + i.th : '', lowFg: lv === 'out' ? '#fff' : '#6e2c74', lowBgc: lv === 'out' ? '#8c1c45' : '#f1dff3',
+        minus: () => S.adjustSpaceItem(i.id, -1), plus: () => S.adjustSpaceItem(i.id, 1),
+        edit: () => this.setState({ form: { ...i }, formErr: '' }),
+        draft: d, setDraft: e => this.setState({ drafts: { ...this.state.drafts, [i.id]: e.target.value } }),
+        diff: diff === 0 ? '✓' : (diff > 0 ? '+' : '') + diff, diffC: diff === 0 ? '#2f4f60' : '#8c1c45' };
+    });
+    const changed = items.filter(i => { const d = drafts[i.id]; return d != null && Math.max(0, Math.round(Number(d) || 0)) !== i.qty; }).length;
+    const f = st.form;
+    const setF = (k, v) => this.setState({ form: { ...this.state.form, [k]: v }, formErr: '' });
+    const history = counts.slice(0, 6).map((c, idx) => {
+      const prevC = counts[idx + 1];
+      const lines = c.lines.map(l => { const base = l.prev != null ? l.prev : l.expected; const dd = l.counted - base; return { name: l.name, text: base + ' → ' + l.counted, diff: (dd > 0 ? '+' : '') + dd, c: dd < 0 ? '#8c1c45' : '#2f4f60', dd }; }).filter(l => l.dd !== 0);
+      const d = new Date(c.ts);
+      return { date: S.fmtDate(new Date(c.ts - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10)), by: c.by,
+        summary: c.lines.length + ' counted · ' + (prevC ? lines.length + ' changed since last count' : 'first count'),
+        compare: prevC ? 'Compared with the count before it' : 'Compared with what was on record', lines, noLines: lines.length === 0,
+        open: st.open === c.id, arrow: st.open === c.id ? '▾' : '▸', toggle: () => this.setState({ open: st.open === c.id ? null : c.id }) };
+    });
+    const lc = counts[0];
+    return {
+      missing: false, ready: true, idle: !st.counting && !f, counting: st.counting,
+      kindLabel: sp.kind === 'classroom' ? 'Classroom' : (sp.subject || 'Subject') + ' space', name: sp.name,
+      sub: 'Owner: ' + owner + (isAdmin ? ' · you can edit this as admin' : ''),
+      nItems: items.length, nLow, lowBg: nLow ? '#f1dff3' : '#f1eaf5', lowFg: nLow ? '#6e2c74' : '#2e0f38', nLoan: items.filter(i => i.loan).length,
+      lastCounted: lc ? 'Last counted ' + history[0].date : 'Never counted',
+      justSaved: st.saved,
+      filters: ['All', ...CATS, 'On loan', 'Low'].map(c => ({ label: c === 'All' ? 'All · ' + items.length : c, ...sel(fl === c), pick: () => this.setState({ filter: c }) })),
+      rows, empty: shown.length === 0,
+      emptyTitle: items.length ? 'nothing in this filter' : 'nothing here yet', emptyMsg: items.length ? 'Try another category.' : 'Add the supplies, equipment, books and furniture that live in ' + sp.name + '.',
+      startCount: () => this.setState({ counting: true, drafts: {}, filter: 'All' }), cancelCount: () => this.setState({ counting: false, drafts: {} }),
+      changedLine: changed ? changed + ' differ from the record so far.' : 'Everything matches so far.',
+      saveCount: () => { S.saveCount(sid, items.map(i => ({ id: i.id, counted: drafts[i.id] ?? i.qty }))); this.setState({ counting: false, drafts: {} }); this.flash('Inventory saved' + (changed ? ' · ' + changed + ' corrected' : ' · everything matched')); },
+      editing: !!f, formTitle: f && f.id ? 'Edit ' + f.name : 'Add an item', canRemove: !!(f && f.id), formErr: st.formErr,
+      f: f || {}, catOpts: CATS.map(c => ({ name: c, ...sel(f && f.cat === c), pick: () => setF('cat', c) })),
+      on: { name: e => setF('name', e.target.value), qty: e => setF('qty', e.target.value), unit: e => setF('unit', e.target.value), th: e => setF('th', e.target.value), note: e => setF('note', e.target.value), loan: e => setF('loan', e.target.checked) },
+      openNew: () => this.setState({ form: { name: '', cat: 'Supplies', qty: 1, unit: '', th: 0, loan: false, note: '' }, formErr: '' }),
+      closeForm: () => this.setState({ form: null }),
+      saveItem: e => { e.preventDefault(); if (!f.name.trim()) return this.setState({ formErr: 'Give the item a name.' }); S.saveSpaceItem({ ...f, spaceId: sid }); this.setState({ form: null }); this.flash((f.id ? 'Saved ' : 'Added ') + f.name.trim()); },
+      removeItem: () => { if (confirm('Remove ' + f.name + ' from ' + sp.name + '?')) { S.removeSpaceItem(f.id); this.setState({ form: null }); } },
+      history, noHistory: counts.length === 0,
+      exportLabel: st.exporting ? 'Preparing…' : 'Export to Excel',
+      doExport: () => { if (st.exporting) return; this.setState({ exporting: true });
+        S.exportXlsx(S.exportName(sp.name), [{ name: 'Items', rows: S.spaceRows(sid) }, { name: 'Count history', rows: S.countRows(sid) }])
+          .then(() => this.flash('Downloaded ' + S.exportName(sp.name))).catch(e => this.flash(e.message)).finally(() => this.setState({ exporting: false })); }
+    };
+  }
+}
+</script>
+</body>
+</html>
