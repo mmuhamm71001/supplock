@@ -1,6 +1,7 @@
 'use client';
 import { useState, type CSSProperties } from 'react';
 import { LEVEL, level } from '@/lib/format';
+import { NoticeModal } from './notice-modal';
 import { RequestModal, type CatalogItem, type ModalMode } from './request-modal';
 import { Icon } from '@/components/icon';
 
@@ -13,6 +14,7 @@ export function Supplies({ items, room, laptopsFree }: { items: CatalogItem[]; r
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('All');
   const [modal, setModal] = useState<ModalMode | null>(null);
+  const [notice, setNotice] = useState(false);
   const cats = ['All', ...new Set(items.map(i => i.category))];
   const shown = items.filter(i => (cat === 'All' || i.category === cat) && i.name.toLowerCase().includes(q.trim().toLowerCase()));
 
@@ -30,6 +32,7 @@ export function Supplies({ items, room, laptopsFree }: { items: CatalogItem[]; r
             <button onClick={() => setModal({ kind: 'custom' })} style={{ minHeight: 58, padding: '0 24px', border: 'none', borderRadius: 20, background: 'none', color: 'inherit', fontWeight: 700, fontSize: 17, cursor: 'pointer' }}>+ Request something not listed</button>
           </sl-block>
           <button onClick={() => setModal({ kind: 'laptop' })} style={{ minHeight: 52, padding: '0 20px', border: 'none', borderRadius: 16, background: '#1a2c54', color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 5px 0 #0f1b37' }}>Request laptops</button>
+          <button onClick={() => setNotice(true)} style={{ minHeight: 52, padding: '0 20px', border: '2px solid #2e0f38', borderRadius: 16, background: '#fff', color: '#2e0f38', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 5px 0 #2e0f38' }}>Tell the office</button>
         </div>
       </div>
 
@@ -80,6 +83,7 @@ export function Supplies({ items, room, laptopsFree }: { items: CatalogItem[]; r
         </div>
       )}
 
+      {notice && <NoticeModal onClose={() => setNotice(false)} />}
       {modal && <RequestModal key={modal.kind === 'supply' ? modal.item.id : modal.kind} mode={modal} room={room} laptopsFree={laptopsFree} onClose={() => setModal(null)} />}
     </>
   );

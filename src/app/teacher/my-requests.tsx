@@ -5,7 +5,9 @@ import { Icon } from '@/components/icon';
 const STEPS = ['Pending', 'Approved (Pending Order)', 'Ordered', 'Delivered'];
 const ORDER = ['pending', 'approved', 'ordered', 'delivered'];
 
-export function MyRequests({ requests }: { requests: RequestRow[] }) {
+export type MyNote = { id: string; text: string; handled: boolean; created_at: string };
+
+export function MyRequests({ requests, notes }: { requests: RequestRow[]; notes: MyNote[] }) {
   return (
     <>
       <h1 style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, fontSize: 38, margin: '0 0 20px' }}>My requests</h1>
@@ -57,6 +59,22 @@ export function MyRequests({ requests }: { requests: RequestRow[] }) {
           <div style={{ fontFamily: 'var(--font-hand)', fontSize: 30, fontWeight: 700, color: '#5e3680' }}>no requests yet</div>
           <div style={{ fontSize: 16, color: '#3d2547', maxWidth: 380 }}>Everything you ask for shows up here, with its status. Head to Supplies to make your first request.</div>
         </div>
+      )}
+      {notes.length > 0 && (
+        <>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, fontSize: 28, margin: '34px 0 14px' }}>My notes to the office</h2>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {notes.map(n => (
+              <li key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', background: '#fff', borderRadius: 22, padding: '14px 18px', border: '2px solid #efe7f3' }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>“{n.text}”</div>
+                  <div style={{ fontSize: 14, color: '#5c4766', marginTop: 3 }}><Stamp ts={n.created_at} /></div>
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 999, ...(n.handled ? { color: '#fff', background: '#2f4f60' } : { color: '#1a2c54', background: '#dde2ee' }) }}>{n.handled ? 'Taken care of' : 'Sent'}</span>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </>
   );

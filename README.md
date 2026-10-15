@@ -12,8 +12,10 @@
 - Browse the school's supply list (no prices or vendors) and request items in two clicks
 - Request anything not listed, with a product link and a needed-by date, and borrow laptops (temporary checkout or full-time class use)
 - Follow every request's status, get notifications in the app and by email, and keep their classroom's inventory up to date
+- Send the office a quick note about shared things running low (copy paper, tissues) that nobody requests one at a time
 
 **For admins**
+- Notes from teachers on the dashboard, marked handled with one click (the teacher is told)
 - Approval queue: approve, deny or change the quantity first. Stock only moves on approval and never goes below zero; requests that exceed stock are flagged
 - Inventory with pack sizes, low-stock alerts, a shopping list grouped by vendor, reorders and partial deliveries, and **Excel import/export**
 - Laptop cart tracking (tags, Zoom installs, checkouts, returns)

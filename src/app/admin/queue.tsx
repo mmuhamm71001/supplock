@@ -3,7 +3,7 @@ import { useState, useTransition, type CSSProperties } from 'react';
 import { ErrorText } from '@/components/form';
 import { Stamp } from '@/components/stamp';
 import { fmtDate, isoPlus, reqTitle, statusOf, type RequestRow } from '@/lib/format';
-import { approve, deny, markOrdered, markReceived } from './actions';
+import { approve, changeEta, deny, markOrdered, markReceived } from './actions';
 import { Icon } from '@/components/icon';
 
 export type QueueRow = RequestRow & { teacher: string; avail: number | null };
@@ -87,15 +87,24 @@ export function ApprovalQueue({ rows }: { rows: QueueRow[] }) {
   );
 }
 
+const dateInput: CSSProperties = { height: 44, border: '2px solid #e6dbef', borderRadius: 12, padding: '0 10px', fontFamily: 'var(--font-mono)', fontSize: 13, color: '#2e0f38', background: '#fff' };
+const small = (bg: string): CSSProperties => ({ minHeight: 44, padding: '0 14px', border: 'none', borderRadius: 12, background: bg, color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer' });
+
 function Custom({ r }: { r: QueueRow }) {
-  const [eta, setEta] = useState(() => isoPlus(7));
+  const [eta, setEta] = useState(() => r.eta || isoPlus(7));
   const [err, setErr] = useState('');
   const [busy, start] = useTransition();
   const s = statusOf(r);
   const run = (fn: () => Promise<{ error?: string }>) => start(async () => { setErr(''); const res = await fn(); if (res.error) setErr(res.error); });
+  const picker = (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 12, fontWeight: 700, color: '#5c4766' }}>
+      Expected arrival
+      <input type="date" value={eta} min={isoPlus(0)} onChange={e => setEta(e.target.value)} style={dateInput} />
+    </label>
+  );
   return (
-    <li style={{ padding: '12px 0', borderTop: '1px solid #efe7f3', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', opacity: busy ? 0.6 : 1 }}>
-      <div style={{ flex: 1, minWidth: 200 }}>
+    <li style={{ padding: '12px 0', borderTop: '1px solid #efe7f3', display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap', opacity: busy ? 0.6 : 1 }}>
+      <div style={{ flex: 1, minWidth: 200, alignSelf: 'center' }}>
         <div style={{ fontWeight: 700, fontSize: 16 }}>{r.name} ×{r.qty}</div>
         <div style={{ fontSize: 14, color: '#5c4766' }}>{r.teacher}{r.needed_by ? ' · needed by ' + fmtDate(r.needed_by) : ''}</div>
         {r.url && <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 700 }}>Open product link ↗</a>}
@@ -103,16 +112,17 @@ function Custom({ r }: { r: QueueRow }) {
         <ErrorText>{err}</ErrorText>
       </div>
       {r.status === 'approved' && (
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <input type="date" value={eta} min={isoPlus(0)} onChange={e => setEta(e.target.value)} aria-label={`Expected arrival for ${r.name}`}
-            style={{ height: 44, border: '2px solid #e6dbef', borderRadius: 12, padding: '0 10px', fontFamily: 'var(--font-mono)', fontSize: 13, color: '#2e0f38', background: '#fff' }} />
-          <button disabled={busy} onClick={() => run(() => markOrdered(r.id, eta))}
-            style={{ minHeight: 44, padding: '0 14px', border: 'none', borderRadius: 12, background: '#1a2c54', color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>Mark ordered</button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          {picker}
+          <button disabled={busy} onClick={() => run(() => markOrdered(r.id, eta))} style={small('#1a2c54')}>Mark ordered</button>
         </div>
       )}
       {r.status === 'ordered' && (
-        <button disabled={busy} onClick={() => run(() => markReceived(r.id))}
-          style={{ minHeight: 44, padding: '0 14px', border: 'none', borderRadius: 12, background: '#4d7b93', color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>Mark received</button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          {picker}
+          {eta !== r.eta && <button disabled={busy} onClick={() => run(() => changeEta(r.id, eta))} style={small('#8351a8')}>Save date</button>}
+          <button disabled={busy} onClick={() => run(() => markReceived(r.id))} style={small('#4d7b93')}>Mark received</button>
+        </div>
       )}
     </li>
   );

@@ -7,7 +7,7 @@ import { reqTitle, type RequestRow } from '@/lib/format';
 import { getSpace, listSpaces } from '@/lib/spaces';
 import { createClient } from '@/lib/supabase/server';
 import { MySpaces } from './my-spaces';
-import { MyRequests } from './my-requests';
+import { MyRequests, type MyNote } from './my-requests';
 import { Placements, type Placement } from './placements';
 import type { CatalogItem } from './request-modal';
 import { Supplies } from './supplies';
@@ -24,12 +24,13 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
   const q = await searchParams;
   const tabName = q.tab === 'mine' ? 'mine' : q.tab === 'spaces' ? 'spaces' : 'supplies';
   const supabase = await createClient();
-  const [items, requests, free, spaces] = await Promise.all([
+  const [items, requests, free, spaces, notes] = await Promise.all([
     supabase.from('catalog').select('id, name, category, unit, qty, low_threshold, icon').order('name'),
     supabase.from('requests').select('id, kind, status, qty, room, note, created_at, item_name, name, url, needed_by, eta, laptop_type, from_date, to_date, laptop_tags, placement')
       .eq('teacher_id', me.id).order('created_at', { ascending: false }),
     supabase.rpc('laptops_available'),
-    listSpaces()
+    listSpaces(),
+    supabase.from('notices').select('id, text, handled, created_at').eq('teacher_id', me.id).order('created_at', { ascending: false }).limit(10)
   ]);
   const myRequests = (requests.data || []) as RequestRow[];
   const mySpaces = spaces.filter(s => s.owner_id === me.id);
@@ -51,7 +52,7 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
       </TeacherHeader>
       <main style={{ maxWidth: 1080, margin: '0 auto', padding: '28px 20px 80px' }}>
         <Placements items={placements} spaces={mySpaces.map(s => ({ id: s.id, name: s.name }))} />
-        {tabName === 'mine' ? <MyRequests requests={myRequests} />
+        {tabName === 'mine' ? <MyRequests requests={myRequests} notes={(notes.data || []) as MyNote[]} />
           : tabName === 'spaces' ? <MySpaces spaces={mySpaces} current={space} />
             : <Supplies items={(items.data || []) as CatalogItem[]} room={me.room} laptopsFree={(free.data as number) ?? 0} />}
       </main>

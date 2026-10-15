@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getGazette } from './gazette/data';
 import { gazetteFonts } from './gazette/fonts';
 import { MiniGazette } from './gazette/mini';
+import { Notices, type Notice } from './notices';
 import { ApprovalQueue, CustomOrders, type QueueRow } from './queue';
 import { SchoolStrip } from './school-strip';
 import { Icon } from '@/components/icon';
@@ -23,12 +24,13 @@ type Raw = RequestRow & { teacher: { name: string } | null; item: { qty: number 
 async function Dashboard() {
   const me = await requireRole('admin');
   const supabase = await createClient();
-  const [reqs, items, todos, laptops, urgent, gazette] = await Promise.all([
+  const [reqs, items, todos, laptops, urgent, notices, gazette] = await Promise.all([
     supabase.from('requests').select(REQ).in('status', ['pending', 'approved', 'ordered']).order('created_at'),
     supabase.from('items').select('id, name, unit, qty, low_threshold, icon'),
     supabase.from('todos').select('id', { count: 'exact', head: true }).eq('done', false),
     supabase.from('laptops').select('status, zoom'),
     supabase.from('notifications').select('id, text, ts').eq('to_role', 'admin').eq('kind', 'urgent').eq('read', false).order('ts', { ascending: false }).limit(3),
+    supabase.from('notices').select('id, teacher_name, text, created_at').eq('handled', false).order('created_at', { ascending: false }),
     getGazette()
   ]);
 
@@ -66,6 +68,7 @@ async function Dashboard() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,420px),1fr))', gap: 22, alignItems: 'start' }}>
           <section aria-label="Requests" style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+            <Notices rows={(notices.data || []) as Notice[]} />
             <ApprovalQueue rows={pending} />
             <CustomOrders rows={customs} />
           </section>
