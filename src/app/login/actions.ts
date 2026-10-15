@@ -88,7 +88,7 @@ export async function joinSchool(form: FormData): Promise<Result> {
   const { error } = await admin.rpc('join_school', { p_user: acct.id, p_code: code, p_name: name, p_email: email, p_room: room });
   if (error) {
     await admin.auth.admin.deleteUser(acct.id);
-    return { error: /email to join/.test(error.message) ? error.message + '.' : 'Could not join the school. Please try again.' };
+    return { error: /email to join|plan's limit/.test(error.message) ? error.message + '.' : 'Could not join the school. Please try again.' };
   }
   await signInWith(email, password);
   await rememberCode(school.code);

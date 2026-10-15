@@ -81,6 +81,13 @@ export async function runChecks(): Promise<Check[]> {
   out.push({ label: 'Email sending (Resend) key is filled in', ok: /^re_\w{10,}/.test(key),
     help: key ? 'It should start with re_' : 'Add RESEND_API_KEY to .env.local. Until then, notifications only show in the bell.' });
 
+  const { error: billErr } = await admin.from('school_billing').select('school_id', { head: true, count: 'exact' });
+  out.push({ label: 'Billing migration has been run', ok: !billErr, help: 'Run supabase/migrations/0009_billing.sql in the Supabase SQL Editor' });
+  const sk = (process.env.STRIPE_SECRET_KEY || '').trim(), wh = (process.env.STRIPE_WEBHOOK_SECRET || '').trim();
+  out.push({ label: `Stripe secret key is filled in${sk.startsWith('sk_test_') ? ' (test mode)' : ''}`, ok: /^sk_(test|live)_\w{10,}/.test(sk),
+    help: sk ? 'It should start with sk_test_ or sk_live_' : 'Add STRIPE_SECRET_KEY to .env.local (Stripe → Developers → API keys)' });
+  out.push({ label: 'Stripe webhook secret is filled in', ok: /^whsec_\w{10,}/.test(wh), help: 'Add STRIPE_WEBHOOK_SECRET (Stripe → Developers → Webhooks → your endpoint → Signing secret)' });
+
   const { data: bucket } = await admin.storage.getBucket('logos');
   out.push({ label: 'Storage bucket for school logos exists', ok: !!bucket?.public,
     help: 'The migration creates a public bucket named "logos". Re-run it.' });

@@ -171,7 +171,7 @@ export function AuthCard({ initialMode, initialCode, initialSchool }: { initialM
           </sl-block>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginTop: 6 }}>
             <button type="button" onClick={() => copy(newCode)} aria-live="polite" style={{ minHeight: 48, padding: '0 18px', border: '2px solid #2e0f38', borderRadius: 14, background: '#fff', color: '#2e0f38', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{copied ? 'Copied ✓' : 'Copy code'}</button>
-            <a href="/admin" style={{ minHeight: 48, padding: '0 20px', borderRadius: 14, background: '#8351a8', color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', textDecoration: 'none', boxShadow: '0 4px 0 #5e3680' }}>Go to my dashboard →</a>
+            <a href="/admin/billing" style={{ minHeight: 48, padding: '0 20px', borderRadius: 14, background: '#8351a8', color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', textDecoration: 'none', boxShadow: '0 4px 0 #5e3680' }}>Next: start your free trial →</a>
           </div>
           <div style={{ fontSize: 13, color: '#5c4766' }}>You can find the code and change the logo anytime on your dashboard.</div>
         </div>
