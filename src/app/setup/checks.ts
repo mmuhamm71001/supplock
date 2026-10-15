@@ -86,6 +86,15 @@ export async function runChecks(): Promise<Check[]> {
   const sk = (process.env.STRIPE_SECRET_KEY || '').trim(), wh = (process.env.STRIPE_WEBHOOK_SECRET || '').trim();
   out.push({ label: `Stripe secret key is filled in${sk.startsWith('sk_test_') ? ' (test mode)' : ''}`, ok: /^sk_(test|live)_\w{10,}/.test(sk),
     help: sk ? 'It should start with sk_test_ or sk_live_' : 'Add STRIPE_SECRET_KEY to .env.local (Stripe → Developers → API keys)' });
+  if (/^sk_(test|live)_/.test(sk)) {
+    try {
+      const { stripe } = await import('@/lib/stripe');
+      const n = (await stripe().prices.list({ lookup_keys: ['supplock_small_month'], limit: 1 })).data.length;
+      out.push({ label: 'Stripe key works and the plans exist', ok: n === 1, help: 'Run node scripts/stripe-setup.mjs to create the plans' });
+    } catch (e) {
+      out.push({ label: 'Stripe key works and the plans exist', ok: false, help: 'Stripe said: ' + (e as Error).message });
+    }
+  }
   out.push({ label: 'Stripe webhook secret is filled in', ok: /^whsec_\w{10,}/.test(wh), help: 'Add STRIPE_WEBHOOK_SECRET (Stripe → Developers → Webhooks → your endpoint → Signing secret)' });
 
   const { data: bucket } = await admin.storage.getBucket('logos');
