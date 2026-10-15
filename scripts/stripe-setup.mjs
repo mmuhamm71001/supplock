@@ -1,12 +1,12 @@
 // One-time setup of Supplock's plans in Stripe. Safe to run again: it only creates what's missing.
-// Usage: node scripts/stripe-setup.mjs   (reads STRIPE_SECRET_KEY from .env.local)
+// Usage: node scripts/stripe-setup.mjs   (uses STRIPE_SECRET_KEY from the environment, else from .env.local)
 import { readFileSync } from 'node:fs';
 import Stripe from 'stripe';
 
 const env = Object.fromEntries(readFileSync(new URL('../.env.local', import.meta.url), 'utf8').split('\n')
   .filter(l => /^\w+=/.test(l)).map(l => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).trim()]));
-const key = env.STRIPE_SECRET_KEY;
-if (!/^sk_(test|live)_/.test(key || '')) { console.error('Add STRIPE_SECRET_KEY (sk_test_… or sk_live_…) to .env.local first.'); process.exit(1); }
+const key = (process.env.STRIPE_SECRET_KEY || env.STRIPE_SECRET_KEY || '').trim();
+if (!/^[sr]k_(test|live)_/.test(key)) { console.error('Add STRIPE_SECRET_KEY (sk_test_… or sk_live_…) to .env.local first.'); process.exit(1); }
 const stripe = new Stripe(key);
 const site = (env.NEXT_PUBLIC_SITE_URL || 'https://www.supplock.com').replace(/\/$/, '');
 
@@ -17,7 +17,7 @@ const PLANS = {
   large: { name: 'Supplock Large', desc: 'Unlimited teachers', month: 12900, year: 129000 }
 };
 
-console.log(`Stripe ${key.startsWith('sk_test_') ? 'TEST' : 'LIVE'} mode`);
+console.log(`Stripe ${key.includes('_test_') ? 'TEST' : 'LIVE'} mode`);
 const portalPrices = [];
 for (const [id, p] of Object.entries(PLANS)) {
   const found = (await stripe.products.search({ query: `metadata['supplock_plan']:'${id}'` })).data[0];
