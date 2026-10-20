@@ -17,7 +17,7 @@
 **For admins**
 - Notes from teachers on the dashboard, marked handled with one click (the teacher is told)
 - Approval queue: approve, deny or change the quantity first. Stock only moves on approval and never goes below zero; requests that exceed stock are flagged
-- Inventory with pack sizes, low-stock alerts, a shopping list grouped by vendor, reorders and partial deliveries, and **Excel import/export**
+- Inventory with pack sizes, low-stock alerts, a shopping list grouped by vendor, reorders and partial deliveries, logging whole orders by pasting product links, and **Excel import/export**
 - Laptop cart tracking (tags, Zoom installs, checkouts, returns)
 - **Spaces:** classroom and subject inventories (labs, gym, art room) with an owner, periodic counts and count history
 - **The Supplock Gazette:** the to-do list, laid out as a vintage newspaper that writes its own headlines from what's happening in the closet

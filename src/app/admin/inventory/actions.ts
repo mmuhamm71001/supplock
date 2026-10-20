@@ -8,7 +8,7 @@ import { parseSupplyList, type ImportRow } from '@/lib/xlsx';
 type Result = { error?: string };
 
 // The database explains problems in plain words; show those, hide anything technical.
-const FRIENDLY = /Add the|must be|already|no longer|doesn't look right|too long|Pick how many|was removed|Row \d+|more than 2000|Only admins|Nothing to import/;
+const FRIENDLY = /Add the|must be|already|no longer|doesn't look right|too long|Pick how many|was removed|Row \d+|more than 2000|Only admins|Nothing to import|at least one|more than 100|in the past/;
 async function call(fn: string, args: Record<string, unknown>): Promise<Result & { data?: unknown }> {
   const { data, error } = await (await createClient()).rpc(fn, args);
   refresh();
@@ -41,6 +41,13 @@ export async function removeItem(id: string) {
 
 export async function placeReorder(item: string, packs: number) {
   return call('place_reorder', { p_item: item, p_packs: packs });
+}
+
+// A whole order at once: [{item, packs, link}], arriving on eta (YYYY-MM-DD).
+export async function logOrder(lines: { item: string; packs: number; link: string }[], eta: string) {
+  if (!Array.isArray(lines) || !lines.length) return { error: 'Add at least one item to the order.' };
+  const r = await call('log_order', { p_lines: lines, p_eta: /^\d{4}-\d{2}-\d{2}$/.test(eta) ? eta : null });
+  return r.error ? { error: r.error } : {};
 }
 
 export async function setReorderPacks(id: string, packs: number) {

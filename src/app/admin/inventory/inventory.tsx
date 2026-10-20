@@ -5,9 +5,10 @@ import { Icon } from '@/components/icon';
 import { LEVEL, fmtDate, isoPlus, level, money, packPlural, suggest } from '@/lib/format';
 import { adjustItem, placeReorder, receiveReorder, removeItem, setReorderPacks } from './actions';
 import { ImportDialog } from './import-dialog';
+import { OrderDialog } from './order-dialog';
 import { BLANK, ItemPanel, type Item } from './item-panel';
 
-export type Reorder = { id: string; item_id: string | null; item_name: string; packs: number; placed_on: string; eta: string | null; status: 'ordered' | 'received'; received_packs: number | null };
+export type Reorder = { id: string; item_id: string | null; item_name: string; packs: number; link: string; placed_on: string; eta: string | null; status: 'ordered' | 'received'; received_packs: number | null };
 
 type Filter = 'all' | 'low' | 'out';
 const card: CSSProperties = { background: '#fff', borderRadius: 24, padding: '20px 22px', border: '2px solid #e6dbef' };
@@ -20,6 +21,7 @@ export function Inventory({ items, reorders }: { items: Item[]; reorders: Reorde
   const [filter, setFilter] = useState<Filter>('all');
   const [editing, setEditing] = useState<Item | null>(null);
   const [importing, setImporting] = useState(false);
+  const [ordering, setOrdering] = useState(false);
   const [err, setErr] = useState('');
   const [busy, start] = useTransition();
   const run = (fn: () => Promise<{ error?: string }>) => start(async () => { setErr(''); const r = await fn(); if (r.error) setErr(r.error); });
@@ -151,14 +153,18 @@ export function Inventory({ items, reorders }: { items: Item[]; reorders: Reorde
         </section>
 
         <section style={card} aria-labelledby="orders-h">
-          <h2 id="orders-h" style={{ ...h2, marginBottom: 10 }}>Orders</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
+            <h2 id="orders-h" style={h2}>Orders</h2>
+            <button onClick={() => setOrdering(true)} style={smallBtn('#8351a8')}>+ Log an order</button>
+          </div>
           {reorders.map(o => <Order key={o.id} o={o} it={o.item_id ? byId.get(o.item_id) : undefined} />)}
-          {reorders.length === 0 && <div style={{ fontSize: 15, color: '#5c4766' }}>No orders yet. Items you mark ordered from the shopping list show up here.</div>}
+          {reorders.length === 0 && <div style={{ fontSize: 15, color: '#5c4766' }}>No orders yet. Mark items ordered from the shopping list, or click + Log an order for anything you bought.</div>}
         </section>
       </div>
 
       {editing && <ItemPanel key={editing.id || 'new'} item={editing} onClose={() => setEditing(null)} />}
       {importing && <ImportDialog onClose={() => setImporting(false)} />}
+      {ordering && <OrderDialog items={items} onClose={() => setOrdering(false)} />}
     </>
   );
 }
@@ -178,7 +184,10 @@ function Order({ o, it }: { o: Reorder; it?: Item }) {
   return (
     <div style={{ padding: '10px 0', borderTop: '1px solid #efe7f3', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
       <div style={{ flex: 1, minWidth: 180 }}>
-        <div style={{ fontWeight: 700 }}>{it?.name || o.item_name}{!it && <span style={{ fontWeight: 400, color: '#5c4766' }}> (removed)</span>}</div>
+        <div style={{ fontWeight: 700 }}>
+          {it?.name || o.item_name}{!it && <span style={{ fontWeight: 400, color: '#5c4766' }}> (removed)</span>}
+          {o.link && <a href={o.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, marginLeft: 8 }}>link ↗</a>}
+        </div>
         <div style={{ fontSize: 13, color: '#5c4766' }}>
           {open
             ? `${packs} ${packPlural(pk, packs)} × ${size} ${unit} · placed ${fmtDate(o.placed_on)}${o.eta ? ' · arrives ' + fmtDate(o.eta) : ''}`

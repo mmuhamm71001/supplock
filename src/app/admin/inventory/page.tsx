@@ -13,7 +13,7 @@ async function Page() {
   const supabase = await createClient();
   const [items, reorders] = await Promise.all([
     supabase.from('items').select('id, name, category, unit, qty, low_threshold, vendor, url, pack_name, pack_size, price, icon').order('name'),
-    supabase.from('reorders').select('id, item_id, item_name, packs, placed_on, eta, status, received_packs')
+    supabase.from('reorders').select('id, item_id, item_name, packs, link, placed_on, eta, status, received_packs')
       .order('status').order('placed_on', { ascending: false }).limit(40)
   ]);
   return (
