@@ -16,7 +16,7 @@ declare module 'react' {
         mhide?: string;
         radius?: string;
       };
-      'sl-icon': SLAttrs & { name?: string; label?: string; size?: string; variant?: 'detail' | 'simple'; tint?: string };
+      'sl-icon': SLAttrs & { name?: string; label?: string; size?: string; variant?: 'detail' | 'simple'; tint?: string; space?: 'classroom' | 'subject' };
     }
   }
 }

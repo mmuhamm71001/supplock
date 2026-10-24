@@ -1,4 +1,4 @@
-// Supplock sketchbook illustrations. <sl-icon name="markers" size="48" [variant="detail|simple"] [tint]> or <sl-icon label="Dry-erase markers">. Vector, so crisp at any pixel density; detail versions lazy-render on scroll.
+// Supplock sketchbook illustrations. <sl-icon name="markers" size="48" [variant="detail|simple"] [tint]> or <sl-icon label="Dry-erase markers">, or for a space <sl-icon space="subject|classroom" label="Science lab">. Vector, so crisp at any pixel density; detail versions lazy-render on scroll.
 (function () {
   if (window.SLIcons) return;
   const INK = '#2e0f38', P = '#8351a8', O = '#b45dbb', T = '#4d7b93', N = '#1a2c54', LP = '#e6dbef', LO = '#f1dff3', LT = '#dce8ee', LN = '#dde2ee', W = '#fffdf8';
@@ -68,12 +68,20 @@
     book: ['Books', k => [k.rect(9, 7, 25, 34, P), k.poly([[34, 9], [39, 11.5], [39, 43], [34, 41]], W), k.ln(36, 16, 36, 38), k.ln(13.5, 7, 13.5, 41), k.rect(18, 14, 12, 7, LP), k.hi('M11.2 24L11.2 36')]],
     furniture: ['Furniture', k => [k.rect(4, 15, 40, 6, T), k.rect(7, 21, 4, 21, N), k.rect(37, 21, 4, 21, N), k.rect(24, 21, 13, 10, LT), k.ell(30.5, 26, 1.4, 1.4, N), k.rect(13, 34, 9, 3, LT), k.hi('M8 17.6L18 17.6')]],
     ball: ['Sports ball', k => [k.ell(24, 24, 17, 17, O), k.curve('M7.5 24C16 22 32 22 40.5 24'), k.curve('M24 7C22 16 22 32 24 41'), k.curve('M12.5 11.5C19 18 19 30 12.5 36.5'), k.curve('M35.5 11.5C29 18 29 30 35.5 36.5'), k.hi('M13.5 16.5Q15.5 12.5 19.5 10.6')]],
+    'space-science': ['Science lab', k => [k.poly([[20, 7], [28, 7], [28, 18], [39.5, 40], [8.5, 40], [20, 18]], W), k.poly([[14.3, 29], [33.7, 29], [39.5, 40], [8.5, 40]], T), k.rect(18, 4, 12, 3.5, N), k.ell(21, 34.5, 1.8, 1.8, LT), k.ell(27.5, 32.5, 1.3, 1.3, LT), k.ell(24, 24, 1.4, 1.4, LT), k.ell(27, 19.5, 1, 1, LT), ...k.g('rotate(14 40 20)', [k.rect(37, 9, 6, 22, W), k.path('M37 21L43 21L43 28Q40 33 37 28Z', O, 'M37 21L43 21L43 28Q40 33 37 28Z')]), k.hi('M22 10L22 16')]],
+    'space-classroom': ['Classroom', k => [k.ln(13, 33, 9.5, 44), k.ln(35, 33, 38.5, 44), k.rect(4, 6, 40, 27, N), k.rect(7, 9, 34, 21, LT), k.curve('M11 23L14 14L17 23M12.2 19.5L15.8 19.5'), k.curve('M21 21.5Q23 16.5 25 21.5T29 21.5'), k.ln(31.5, 16, 37, 16), k.ln(31.5, 20, 35.5, 20), k.rect(10, 33, 28, 3, O), k.rect(28, 31, 5, 2, W), k.hi('M9.5 12L9.5 18')]],
+    'space-art': ['Art room', k => [k.path('M24 8C35 8 43 15 43 24C43 31 37 33 33 31C29 29 27 33 29 36C31 40 28 42 23 42C12 42 5 34 5 25C5 15 13 8 24 8Z', LO), k.ell(15.5, 31, 3.6, 3, W), k.ell(15, 19, 3.2, 3.2, O), k.ell(24, 14.5, 3.2, 3.2, P), k.ell(33, 17, 3.2, 3.2, T), k.ell(36.5, 25.5, 2.8, 2.8, N), ...k.g('rotate(-38 30 30)', [k.rect(28.5, 24, 3, 18, W), k.poly([[28.5, 24], [31.5, 24], [30, 17]], P)]), k.hi('M9 23Q9.5 18 12 15')]],
+    'space-music': ['Music room', k => [k.curve('M4 42L44 42', 1.3), k.curve('M4 45L44 45', 1.3), k.poly([[19, 13], [39, 8], [39, 13.5], [19, 18.5]], N), k.ln(19, 13, 19, 35), k.ln(39, 8, 39, 31), ...k.g('rotate(-20 14.5 36)', [k.ell(14.5, 36, 5, 3.8, P)]), ...k.g('rotate(-20 34.5 32)', [k.ell(34.5, 32, 5, 3.8, P)]), k.hi('M12.5 34Q13.5 32.8 15 32.6')]],
+    'space-math': ['Math room', k => [k.rect(11, 4, 26, 39, P), k.rect(15, 8, 18, 8, LT), k.curve('M25 12L30 12', 1.6), ...[0, 1, 2].flatMap(r => [0, 1, 2].map(c => k.ell(17.5 + c * 6.5, 23 + r * 6.5, 2.1, 2.1, r === 2 && c === 2 ? O : LP))), k.hi('M13.5 7L13.5 18')]],
     shelf: ['Supply shelf', k => [k.rect(5, 4, 2.6, 40, LN), k.rect(40.4, 4, 2.6, 40, LN), k.rect(9, 12, 8, 8, P), k.rect(18.5, 9.5, 6, 10.5, T), k.rect(26, 13, 7, 7, O), k.ell(37, 15.5, 2.6, 4.5, LT), k.rect(5, 20, 38, 2.6, N), k.rect(9, 26, 10, 8, LO), k.rect(21, 23.5, 5, 10.5, N), k.rect(28, 27, 10, 7, T), k.ln(30, 30.5, 36, 30.5), k.rect(5, 34, 38, 2.6, N), k.ell(14, 41, 3, 2.4, LP), k.rect(21, 39, 12, 4.5, LO)]],
     box: ['Other (box)', k => [k.poly([[18, 14], [23, 5.5], [46, 6.5], [42, 14]], LP), k.poly([[8, 20], [18, 14], [42, 14], [32, 20]], LO), k.poly([[8, 20], [2.5, 13], [12, 8.5], [18, 14]], LP), k.poly([[32, 20], [42, 14], [42, 36], [32, 42]], P), k.rect(8, 20, 24, 22, LO), k.curve('M15.5 27.5C15.5 22.5 24.5 22.5 24.5 27.5C24.5 31 20 30.5 20 34.5', 3.4), k.ell(20, 38.6, 1.2, 1.2, INK), k.hi('M34.5 24L34.5 36')]]
   };
 
   const RULES = [['sharpener-hand', /(hand|individual|personal|manual|pocket|mini|single).*sharpen|sharpen.*(hand|individual|personal|manual|pocket|mini|single)/], ['sharpener', /sharpen/], ['laptop-zoom', /zoom/], ['laptop', /laptop|chromebook|\blt-\d/], ['highlighter', /highlight/], ['markers', /marker|sharpie|expo/], ['crayons', /crayon/], ['pencils', /pencil/], ['pens', /\bpens?\b|ballpoint/], ['glue-gun', /glue ?gun|hot ?glue/], ['glue', /glue/], ['scissors', /scissor/], ['notebook', /notebook|journal|composition|spiral/], ['book', /book|reader|manual|novel|dictionar/], ['ball', /ball/], ['furniture', /desk|chair|table|stool|rug|easel|\bmats?\b|cabinet|bookcase|furniture/], ['paperclips', /paper ?clips?|binder clips?/], ['construction', /construction|colou?red paper|craft paper|card ?stock/], ['paper', /paper|ream|index card/], ['tissues', /tissue|kleenex/], ['wipes', /wipe|disinfect|clorox|lysol/], ['earbuds', /earbud|headphone|earphone|headset/], ['cushion', /cushion|wobble/], ['tape', /tape/], ['folders', /folder|binder/]];
   const suggest = s => { s = String(s || '').toLowerCase(); for (const [n, re] of RULES) if (re.test(s)) return n; return null; };
+  // Spaces get their picture from their name and subject (e.g. "Science lab", "Rm 108").
+  const SPACE_RULES = [['laptop', /computer|tech|coding|media/], ['space-science', /scien|\blab\b|chem|bio|physic|stem/], ['space-art', /\bart\b|\barts\b|craft|paint|studio|ceramic/], ['space-music', /music|band|choir|chorus|orchestra/], ['space-math', /math|algebra|geometry|calcul/], ['ball', /\bpe\b|p\.e\.|gym|sport|athlet|recess|playground/], ['book', /librar|reading|literacy|english|\bela\b|book/], ['space-classroom', /class|\brm\b|room|grade|kinder|homeroom/]];
+  const suggestSpace = (s, kind) => { s = String(s || '').toLowerCase(); for (const [n, re] of SPACE_RULES) if (re.test(s)) return n; return kind === 'classroom' ? 'space-classroom' : 'shelf'; };
 
   const cache = {};
   function inner(name, detail, tint) {
@@ -135,12 +143,12 @@
   }
 
   class SLIcon extends HTMLElement {
-    static get observedAttributes() { return ['name', 'label', 'size', 'mono', 'tint', 'variant']; }
+    static get observedAttributes() { return ['name', 'label', 'size', 'mono', 'tint', 'variant', 'space']; }
     connectedCallback() { if (this._rot == null) { this._rot = f2(Math.random() * 6 - 3); this.style.setProperty('--r', this._rot + 'deg'); } this.render(); }
     attributeChangedCallback(attr, oldV, newV) { if (oldV !== newV && this.isConnected) this.render(); }
     render() {
       ensureStyle();
-      let n = this.getAttribute('name'); if (!ICONS[n]) n = suggest(this.getAttribute('label')) || 'box';
+      let n = this.getAttribute('name'); if (!ICONS[n]) n = this.hasAttribute('space') ? suggestSpace(this.getAttribute('label'), this.getAttribute('space')) : suggest(this.getAttribute('label')) || 'box';
       const size = Math.max(40, +this.getAttribute('size') || 48);
       const v = this.getAttribute('variant'); const detail = v === 'detail' || (v !== 'simple' && size >= 96);
       const on = x => { const y = this.getAttribute(x); return y != null && y !== 'false' && y !== '0'; };
@@ -155,5 +163,5 @@
     }
   }
   if (!customElements.get('sl-icon')) customElements.define('sl-icon', SLIcon);
-  window.SLIcons = { suggest, list: Object.keys(ICONS).filter(id => id !== 'shelf').map(id => ({ id, label: ICONS[id][0] })) };
+  window.SLIcons = { suggest, suggestSpace, list: Object.keys(ICONS).filter(id => id !== 'shelf' && !id.startsWith('space-')).map(id => ({ id, label: ICONS[id][0] })) };
 })();

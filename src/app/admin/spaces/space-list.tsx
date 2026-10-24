@@ -12,7 +12,6 @@ type Teacher = { id: string; name: string };
 
 const pill = (on: boolean): CSSProperties => ({ minHeight: 42, padding: '0 14px', borderRadius: 999, border: `2px solid ${on ? '#2e0f38' : '#e6dbef'}`, background: on ? '#2e0f38' : '#fff', color: on ? '#fff' : '#2e0f38', fontSize: 14, fontWeight: 700, cursor: 'pointer' });
 const field: CSSProperties = { height: 46, border: '2px solid #e6dbef', borderRadius: 12, padding: '0 12px', fontWeight: 400, fontSize: 15, font: 'inherit', color: '#2e0f38', background: '#fff' };
-const ICON: Record<string, string> = { science: 'pencils', pe: 'ball', art: 'crayons', music: 'earbuds' };
 
 export function SpaceList({ spaces, teachers, selected }: { spaces: ListedSpace[]; teachers: Teacher[]; selected: string | null }) {
   const router = useRouter();
@@ -55,7 +54,7 @@ export function SpaceList({ spaces, teachers, selected }: { spaces: ListedSpace[
           <div key={s.id} style={{ background: '#fff', border: `2px solid ${on ? '#8351a8' : '#e6dbef'}`, borderRadius: 20, padding: '12px 14px', boxShadow: on ? '0 5px 0 #c2abd4' : 'none' }}>
             <button onClick={() => go(s.id)} aria-current={on ? 'true' : undefined}
               style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, background: 'none', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer', color: '#2e0f38' }}>
-              <Icon name={s.kind === 'classroom' ? 'furniture' : ICON[s.subject.toLowerCase()] || 'shelf'} size={40} />
+              <Icon space={s.kind} label={`${s.subject} ${s.name}`} size={40} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                   <span style={{ fontWeight: 700, fontSize: 16 }}>{s.name}</span>

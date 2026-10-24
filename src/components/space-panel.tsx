@@ -63,10 +63,13 @@ export function SpacePanel({ data, isAdmin }: { data: SpaceData; isAdmin: boolea
   return (
     <section aria-label={sp.name} style={{ background: '#fff', border: '2px solid #e6dbef', borderRadius: 24, padding: '20px 22px' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'flex-end', justifyContent: 'space-between' }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#5e3680' }}>{sp.kind === 'classroom' ? 'Classroom' : (sp.subject || 'Subject') + ' space'}</div>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, fontSize: 28, lineHeight: 1.1, margin: '2px 0 4px' }}>{sp.name}</h2>
-          <div style={{ fontSize: 14, color: '#5c4766' }}>Owner: {sp.owner}{isAdmin ? ' · you can edit this as admin' : ''}</div>
+        <div style={{ minWidth: 0, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <Icon space={sp.kind} label={`${sp.subject} ${sp.name}`} size={64} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#5e3680' }}>{sp.kind === 'classroom' ? 'Classroom' : (sp.subject || 'Subject') + ' space'}</div>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, fontSize: 28, lineHeight: 1.1, margin: '2px 0 4px' }}>{sp.name}</h2>
+            <div style={{ fontSize: 14, color: '#5c4766' }}>Owner: {sp.owner}{isAdmin ? ' · you can edit this as admin' : ''}</div>
+          </div>
         </div>
         {idle && (
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>

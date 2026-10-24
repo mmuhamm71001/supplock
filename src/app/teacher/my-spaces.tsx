@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { SpacePanel } from '@/components/space-panel';
-import type { SpaceData } from '@/lib/space-shared';
+import { Icon } from '@/components/icon';
+import type { Space, SpaceData } from '@/lib/space-shared';
 
-type Listed = { id: string; name: string; low: number };
+type Listed = Pick<Space, 'id' | 'name' | 'kind' | 'subject'> & { low: number };
 
 export function MySpaces({ spaces, current }: { spaces: Listed[]; current: SpaceData | null }) {
   return (
@@ -17,8 +18,8 @@ export function MySpaces({ spaces, current }: { spaces: Listed[]; current: Space
             const on = s.id === current?.space.id;
             return (
               <Link key={s.id} href={`/teacher?tab=spaces&space=${s.id}`} aria-current={on ? 'page' : undefined} scroll={false}
-                style={{ minHeight: 46, padding: '0 16px', borderRadius: 999, border: `2px solid ${on ? '#2e0f38' : '#e6dbef'}`, background: on ? '#2e0f38' : '#fff', color: on ? '#fff' : '#2e0f38', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                {s.name}{s.low ? ` · ${s.low} low` : ''}
+                style={{ minHeight: 50, padding: '0 16px 0 6px', gap: 6, borderRadius: 999, border: `2px solid ${on ? '#2e0f38' : '#e6dbef'}`, background: on ? '#2e0f38' : '#fff', color: on ? '#fff' : '#2e0f38', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <Icon space={s.kind} label={`${s.subject} ${s.name}`} size={40} />{s.name}{s.low ? ` · ${s.low} low` : ''}
               </Link>
             );
           })}
