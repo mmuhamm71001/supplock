@@ -23,7 +23,7 @@ const tab = (on: boolean) => ({
 async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['searchParams'] }) {
   const me = await requireRole('teacher');
   const q = await searchParams;
-  const tabName = q.tab === 'mine' ? 'mine' : q.tab === 'spaces' ? 'spaces' : 'supplies';
+  const tabName = q.tab === 'mine' ? 'mine' : q.tab === 'spaces' ? 'spaces' : q.tab === 'borrow' ? 'borrow' : 'supplies';
   const supabase = await createClient();
   const [items, requests, free, spaces, notes] = await Promise.all([
     supabase.from('catalog').select('id, name, category, unit, qty, low_threshold, icon, lendable, back_on').order('name'),
@@ -35,7 +35,8 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
   ]);
   const myRequests = (requests.data || []) as RequestRow[];
   const mySpaces = spaces.filter(s => s.owner_id === me.id);
-  const icons = new Map(((items.data || []) as CatalogItem[]).map(i => [i.name, i.icon]));
+  const catalog = (items.data || []) as CatalogItem[];
+  const icons = new Map(catalog.map(i => [i.name, i.icon]));
   const placements: Placement[] = myRequests.filter(r => r.placement === 'pending').map(r => ({
     id: r.id, kind: r.kind, title: reqTitle(r), qty: r.kind === 'laptop' ? r.laptop_tags.length : r.qty, icon: r.kind === 'supply' ? icons.get(r.item_name) ?? null : null
   }));
@@ -48,8 +49,9 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
   return (
     <>
       <TeacherHeader me={me}>
-        <nav aria-label="Teacher" style={{ display: 'flex', gap: 4, background: '#f1eaf5', borderRadius: 999, padding: 4 }}>
+        <nav aria-label="Teacher" style={{ display: 'flex', gap: 4, background: '#f1eaf5', borderRadius: 999, padding: 4, maxWidth: '100%', overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <Link href="/teacher" aria-current={tabName === 'supplies' ? 'page' : undefined} style={tab(tabName === 'supplies')}>Supplies</Link>
+          <Link href="/teacher?tab=borrow" aria-current={tabName === 'borrow' ? 'page' : undefined} style={tab(tabName === 'borrow')}>Borrow</Link>
           <Link href="/teacher?tab=mine" aria-current={tabName === 'mine' ? 'page' : undefined} style={tab(tabName === 'mine')}>My requests · {myRequests.length}</Link>
           <Link href="/teacher?tab=spaces" aria-current={tabName === 'spaces' ? 'page' : undefined} style={tab(tabName === 'spaces')}>My spaces</Link>
         </nav>
@@ -59,7 +61,7 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
         <Placements items={placements} spaces={mySpaces.map(s => ({ id: s.id, name: s.name }))} />
         {tabName === 'mine' ? <MyRequests requests={myRequests} notes={(notes.data || []) as MyNote[]} />
           : tabName === 'spaces' ? <MySpaces spaces={mySpaces} current={space} />
-            : <Supplies items={(items.data || []) as CatalogItem[]} room={me.room} laptopsFree={(free.data as number) ?? 0} />}
+            : <Supplies key={tabName} borrow={tabName === 'borrow'} items={catalog.filter(i => i.lendable === (tabName === 'borrow'))} room={me.room} laptopsFree={(free.data as number) ?? 0} />}
       </main>
     </>
   );
