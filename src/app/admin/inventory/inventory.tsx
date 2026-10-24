@@ -16,7 +16,7 @@ const h2: CSSProperties = { fontFamily: 'var(--font-serif)', fontWeight: 400, fo
 const mini: CSSProperties = { width: 32, height: 32, border: 'none', borderRadius: 9, background: '#f1eaf5', fontWeight: 700, cursor: 'pointer', color: '#2e0f38' };
 const smallBtn = (bg: string): CSSProperties => ({ minHeight: 44, padding: '0 14px', border: 'none', borderRadius: 12, background: bg, color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer' });
 
-export function Inventory({ items, reorders }: { items: Item[]; reorders: Reorder[] }) {
+export function Inventory({ items, reorders, lent }: { items: Item[]; reorders: Reorder[]; lent: Record<string, number> }) {
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [editing, setEditing] = useState<Item | null>(null);
@@ -26,7 +26,8 @@ export function Inventory({ items, reorders }: { items: Item[]; reorders: Reorde
   const [busy, start] = useTransition();
   const run = (fn: () => Promise<{ error?: string }>) => start(async () => { setErr(''); const r = await fn(); if (r.error) setErr(r.error); });
 
-  const lv = (i: Item) => level(i);
+  // Borrowed things are coming back, so they still count toward the stock level.
+  const lv = (i: Item) => level({ ...i, qty: i.qty + (lent[i.id] || 0) });
   const nLow = items.filter(i => lv(i) === 'low' || lv(i) === 'critical').length;
   const nOut = items.filter(i => lv(i) === 'out').length;
   const match = (i: Item) => filter === 'all' || (filter === 'low' ? lv(i) === 'low' || lv(i) === 'critical' : lv(i) === 'out');
@@ -85,7 +86,9 @@ export function Inventory({ items, reorders }: { items: Item[]; reorders: Reorde
           </tr></thead>
           <tbody>
             {rows.map(i => {
-              const L = LEVEL[lv(i)];
+              const L = i.lendable && lv(i) === 'ok'
+                ? (lent[i.id] ? { label: `${lent[i.id]} borrowed`, fg: '#fff', bg: '#4d7b93' } : { label: 'Lend-out · all in', fg: '#2f4f60', bg: '#dce8ee' })
+                : LEVEL[lv(i)];
               return (
                 <tr key={i.id} style={{ borderTop: '1px solid #efe7f3' }}>
                   <td style={{ padding: '8px 16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

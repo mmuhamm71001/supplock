@@ -27,7 +27,7 @@ export async function saveItem(f: FormData) {
   return call('save_item', {
     p_id: str(f, 'id') || null, p_name: str(f, 'name'), p_category: str(f, 'category'), p_unit: str(f, 'unit'),
     p_qty: nums.qty, p_low_threshold: nums.th, p_vendor: str(f, 'vendor'), p_url: str(f, 'url'),
-    p_pack_name: str(f, 'pack_name'), p_pack_size: nums.size, p_price: nums.price, p_icon: str(f, 'icon')
+    p_pack_name: str(f, 'pack_name'), p_pack_size: nums.size, p_price: nums.price, p_icon: str(f, 'icon'), p_lendable: str(f, 'lendable') === '1'
   });
 }
 

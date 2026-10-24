@@ -5,20 +5,20 @@ import { AdminHeader } from '@/components/admin-header';
 import { Greeting } from '@/components/greeting';
 import { Stamp } from '@/components/stamp';
 import { requireRole } from '@/lib/auth';
-import { LEVEL, level, type RequestRow } from '@/lib/format';
+import { LEVEL, borrowedOut, level, type RequestRow } from '@/lib/format';
 import { createClient } from '@/lib/supabase/server';
 import { getGazette } from './gazette/data';
 import { gazetteFonts } from './gazette/fonts';
 import { MiniGazette } from './gazette/mini';
 import { Notices, type Notice } from './notices';
-import { ApprovalQueue, CustomOrders, type QueueRow } from './queue';
+import { ApprovalQueue, Borrowed, CustomOrders, type QueueRow } from './queue';
 import { SchoolStrip } from './school-strip';
 import { Icon } from '@/components/icon';
 
 export const metadata: Metadata = { title: 'Dashboard · Supplock' };
 
 const firstName = (n: string) => n.replace(/^(Mr|Ms|Mrs|Mx|Dr)\.?\s+/i, '').split(' ')[0];
-const REQ = 'id, kind, status, qty, room, note, created_at, item_name, name, url, needed_by, eta, laptop_type, from_date, to_date, laptop_tags, teacher:profiles(name), item:items(qty)';
+const REQ = 'id, kind, status, qty, room, note, created_at, item_name, name, url, needed_by, eta, laptop_type, from_date, to_date, laptop_tags, returned_at, item_id, teacher:profiles(name), item:items(qty)';
 type Raw = RequestRow & { teacher: { name: string } | null; item: { qty: number } | null };
 
 async function Dashboard() {
@@ -43,8 +43,12 @@ async function Dashboard() {
   const pending = rows.filter(r => r.status === 'pending')
     .sort((a, b) => Number(b.avail !== null && b.qty > b.avail) - Number(a.avail !== null && a.qty > a.avail));
   const customs = rows.filter(r => r.kind === 'custom' && r.status !== 'pending');
+  const lentRows = rows.filter(borrowedOut).sort((a, b) => a.to_date!.localeCompare(b.to_date!));
+  const lent = new Map<string, number>();
+  for (const r of lentRows) if (r.item_id) lent.set(r.item_id, (lent.get(r.item_id) || 0) + r.qty);
 
-  const stock = (items.data || []).map(i => ({ ...i, lv: level(i) }))
+  // Borrowed things are coming back, so they still count toward the stock level.
+  const stock = (items.data || []).map(i => ({ ...i, lv: level({ ...i, qty: i.qty + (lent.get(i.id) || 0) }) }))
     .sort((a, b) => a.qty / Math.max(1, a.low_threshold) - b.qty / Math.max(1, b.low_threshold));
   const low = stock.filter(i => i.lv !== 'ok').length;
   const summary = `${pending.length} to approve · ${low} running low · ${todos.count ?? 0} on the to-do list`;
@@ -70,6 +74,7 @@ async function Dashboard() {
           <section aria-label="Requests" style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
             <Notices rows={(notices.data || []) as Notice[]} />
             <ApprovalQueue rows={pending} />
+            <Borrowed rows={lentRows} />
             <CustomOrders rows={customs} />
           </section>
 

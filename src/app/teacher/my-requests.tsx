@@ -1,5 +1,5 @@
 import { Stamp } from '@/components/stamp';
-import { fmtDate, reqTitle, statusOf, type RequestRow } from '@/lib/format';
+import { fmtDate, isBorrow, reqTitle, statusOf, type RequestRow } from '@/lib/format';
 import { Icon } from '@/components/icon';
 
 const STEPS = ['Pending', 'Approved (Pending Order)', 'Ordered', 'Delivered'];
@@ -19,7 +19,8 @@ export function MyRequests({ requests, notes }: { requests: RequestRow[]; notes:
             r.room,
             r.kind === 'laptop' && r.laptop_type === 'temp' ? `${fmtDate(r.from_date)} – ${fmtDate(r.to_date)}` : '',
             r.laptop_tags.length ? r.laptop_tags.join(', ') : '',
-            r.kind === 'custom' && r.needed_by ? 'needed by ' + fmtDate(r.needed_by) : ''
+            r.kind === 'custom' && r.needed_by ? 'needed by ' + fmtDate(r.needed_by) : '',
+            isBorrow(r) && r.status === 'pending' ? 'to borrow until ' + fmtDate(r.to_date) : ''
           ].filter(Boolean);
           return (
             <li key={r.id} style={{ background: '#fff', borderRadius: 22, padding: '16px 18px', border: '2px solid #efe7f3' }}>
@@ -29,6 +30,7 @@ export function MyRequests({ requests, notes }: { requests: RequestRow[]; notes:
                     <span style={{ fontWeight: 700, fontSize: 18 }}>{reqTitle(r)}</span>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700 }}>×{r.qty}</span>
                     {r.kind === 'custom' && <span style={{ fontSize: 12, fontWeight: 700, color: '#6e2c74', background: '#f1dff3', padding: '3px 8px', borderRadius: 8 }}>Custom</span>}
+                    {isBorrow(r) && <span style={{ fontSize: 12, fontWeight: 700, color: '#2f4f60', background: '#dce8ee', padding: '3px 8px', borderRadius: 8 }}>Borrow</span>}
                   </div>
                   <div style={{ fontSize: 14, color: '#5c4766', marginTop: 3 }}>
                     <Stamp ts={r.created_at} />{meta.map(m => ' · ' + m).join('')}

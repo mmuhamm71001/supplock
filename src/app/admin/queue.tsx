@@ -1,9 +1,9 @@
 'use client';
-import { useState, useTransition, type CSSProperties } from 'react';
+import { useState, useSyncExternalStore, useTransition, type CSSProperties } from 'react';
 import { ErrorText } from '@/components/form';
 import { Stamp } from '@/components/stamp';
-import { fmtDate, isoPlus, reqTitle, statusOf, type RequestRow } from '@/lib/format';
-import { approve, changeEta, deny, markOrdered, markReceived } from './actions';
+import { fmtDate, isBorrow, isoPlus, reqTitle, statusOf, type RequestRow } from '@/lib/format';
+import { approve, changeEta, deny, markOrdered, markReceived, returnBorrowed } from './actions';
 import { Icon } from '@/components/icon';
 
 export type QueueRow = RequestRow & { teacher: string; avail: number | null };
@@ -23,7 +23,8 @@ function Pending({ r }: { r: QueueRow }) {
   const meta = [
     r.teacher, r.room || 'no classroom',
     r.kind === 'laptop' && r.laptop_type === 'temp' ? `${fmtDate(r.from_date)} – ${fmtDate(r.to_date)}` : '',
-    r.kind === 'custom' && r.needed_by ? 'needed by ' + fmtDate(r.needed_by) : ''
+    r.kind === 'custom' && r.needed_by ? 'needed by ' + fmtDate(r.needed_by) : '',
+    isBorrow(r) ? 'back by ' + fmtDate(r.to_date) : ''
   ].filter(Boolean);
 
   return (
@@ -34,6 +35,7 @@ function Pending({ r }: { r: QueueRow }) {
             <span style={{ fontWeight: 700, fontSize: 17 }}>{reqTitle(r)}</span>
             {r.kind === 'custom' && <span style={tag('#b45dbb')}>Custom Request</span>}
             {r.kind === 'laptop' && <span style={tag('#1a2c54')}>Laptop</span>}
+            {isBorrow(r) && <span style={tag('#4d7b93')}>Borrow</span>}
           </div>
           <div style={{ fontSize: 14, color: '#5c4766', marginTop: 3 }}>
             {meta[0]} · {meta[1]} · <Stamp ts={r.created_at} />{meta.slice(2).map(m => ' · ' + m).join('')}
@@ -136,6 +138,42 @@ export function CustomOrders({ rows }: { rows: QueueRow[] }) {
         {rows.map(r => <Custom key={r.id} r={r} />)}
       </ul>
       {rows.length === 0 && <div style={{ fontSize: 15, color: '#5c4766', padding: '10px 0' }}>Nothing waiting to be ordered.</div>}
+    </div>
+  );
+}
+
+const noop = () => () => {};
+
+function Lent({ r }: { r: QueueRow }) {
+  const [err, setErr] = useState('');
+  const [busy, start] = useTransition();
+  const today = useSyncExternalStore(noop, () => isoPlus(0), () => '');
+  const late = !!today && r.to_date! < today;
+  return (
+    <li style={{ padding: '12px 0', borderTop: '1px solid #efe7f3', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', opacity: busy ? 0.6 : 1 }}>
+      <div style={{ flex: 1, minWidth: 200 }}>
+        <div style={{ fontWeight: 700, fontSize: 16 }}>{r.item_name} ×{r.qty}</div>
+        <div style={{ fontSize: 14, color: late ? '#8c1c45' : '#5c4766', fontWeight: late ? 700 : 400 }}>
+          {r.teacher}{r.room ? ' · ' + r.room : ''} · {late ? 'overdue, was due ' : 'back by '}{fmtDate(r.to_date)}
+        </div>
+        <ErrorText>{err}</ErrorText>
+      </div>
+      <button disabled={busy} aria-label={`Mark ${r.item_name} returned by ${r.teacher}`}
+        onClick={() => start(async () => { setErr(''); const res = await returnBorrowed(r.id); if (res.error) setErr(res.error); })}
+        style={small('#4d7b93')}>Mark returned</button>
+    </li>
+  );
+}
+
+// Lend-out items that are with a teacher right now, soonest due first.
+export function Borrowed({ rows }: { rows: QueueRow[] }) {
+  if (!rows.length) return null;
+  return (
+    <div style={card}>
+      <h2 style={{ ...h2, marginBottom: 6 }}>Borrowed right now</h2>
+      <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+        {rows.map(r => <Lent key={r.id} r={r} />)}
+      </ul>
     </div>
   );
 }

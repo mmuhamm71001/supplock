@@ -16,8 +16,12 @@ export type RequestRow = {
   id: string; kind: 'supply' | 'custom' | 'laptop'; status: 'pending' | 'approved' | 'denied' | 'ordered' | 'delivered';
   qty: number; room: string; note: string; created_at: string; item_name: string; name: string; url: string;
   needed_by: string | null; eta: string | null; laptop_type: 'temp' | 'full' | null; from_date: string | null; to_date: string | null; laptop_tags: string[];
-  placement?: 'pending' | 'done' | 'skipped' | null;
+  placement?: 'pending' | 'done' | 'skipped' | null; returned_at?: string | null; item_id?: string | null;
 };
+
+// A borrow is a supply request with a return date (to_date).
+export const isBorrow = (r: Pick<RequestRow, 'kind' | 'to_date'>) => r.kind === 'supply' && !!r.to_date;
+export const borrowedOut = (r: RequestRow) => isBorrow(r) && r.status === 'approved' && !r.returned_at;
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -45,9 +49,10 @@ export const STATUS = {
 };
 
 export const statusOf = (r: RequestRow) =>
-  r.kind === 'custom' && r.status === 'approved' ? { label: 'Approved – Pending Order', fg: '#fff', bg: '#8351a8' }
-    : r.kind === 'custom' && r.status === 'ordered' ? { ...STATUS.ordered, label: 'Ordered · arrives ' + fmtDate(r.eta) }
-      : STATUS[r.status];
+  isBorrow(r) && r.status === 'approved' ? (r.returned_at ? { label: 'Given back', fg: '#2f4f60', bg: '#dce8ee' } : { label: 'Borrowed · back by ' + fmtDate(r.to_date), fg: '#fff', bg: '#4d7b93' })
+    : r.kind === 'custom' && r.status === 'approved' ? { label: 'Approved – Pending Order', fg: '#fff', bg: '#8351a8' }
+      : r.kind === 'custom' && r.status === 'ordered' ? { ...STATUS.ordered, label: 'Ordered · arrives ' + fmtDate(r.eta) }
+        : STATUS[r.status];
 
 export const reqTitle = (r: RequestRow) =>
   r.kind === 'supply' ? r.item_name : r.kind === 'custom' ? r.name

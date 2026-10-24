@@ -3,9 +3,10 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { TeacherHeader } from '@/components/teacher-header';
 import { requireRole } from '@/lib/auth';
-import { reqTitle, type RequestRow } from '@/lib/format';
+import { borrowedOut, reqTitle, type RequestRow } from '@/lib/format';
 import { getSpace, listSpaces } from '@/lib/spaces';
 import { createClient } from '@/lib/supabase/server';
+import { Borrowed, type Borrow } from './borrowed';
 import { MySpaces } from './my-spaces';
 import { MyRequests, type MyNote } from './my-requests';
 import { Placements, type Placement } from './placements';
@@ -25,8 +26,8 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
   const tabName = q.tab === 'mine' ? 'mine' : q.tab === 'spaces' ? 'spaces' : 'supplies';
   const supabase = await createClient();
   const [items, requests, free, spaces, notes] = await Promise.all([
-    supabase.from('catalog').select('id, name, category, unit, qty, low_threshold, icon').order('name'),
-    supabase.from('requests').select('id, kind, status, qty, room, note, created_at, item_name, name, url, needed_by, eta, laptop_type, from_date, to_date, laptop_tags, placement')
+    supabase.from('catalog').select('id, name, category, unit, qty, low_threshold, icon, lendable, back_on').order('name'),
+    supabase.from('requests').select('id, kind, status, qty, room, note, created_at, item_name, name, url, needed_by, eta, laptop_type, from_date, to_date, laptop_tags, placement, returned_at')
       .eq('teacher_id', me.id).order('created_at', { ascending: false }),
     supabase.rpc('laptops_available'),
     listSpaces(),
@@ -37,6 +38,9 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
   const icons = new Map(((items.data || []) as CatalogItem[]).map(i => [i.name, i.icon]));
   const placements: Placement[] = myRequests.filter(r => r.placement === 'pending').map(r => ({
     id: r.id, kind: r.kind, title: reqTitle(r), qty: r.kind === 'laptop' ? r.laptop_tags.length : r.qty, icon: r.kind === 'supply' ? icons.get(r.item_name) ?? null : null
+  }));
+  const borrows: Borrow[] = myRequests.filter(borrowedOut).sort((a, b) => a.to_date!.localeCompare(b.to_date!)).map(r => ({
+    id: r.id, title: r.item_name, qty: r.qty, until: r.to_date!, icon: icons.get(r.item_name) ?? null
   }));
   const picked = tabName === 'spaces' ? mySpaces.find(s => s.id === q.space) || mySpaces[0] : undefined;
   const space = picked ? await getSpace(picked.id) : null;
@@ -51,6 +55,7 @@ async function Home({ searchParams }: { searchParams: PageProps<'/teacher'>['sea
         </nav>
       </TeacherHeader>
       <main style={{ maxWidth: 1080, margin: '0 auto', padding: '28px 20px 80px' }}>
+        <Borrowed items={borrows} />
         <Placements items={placements} spaces={mySpaces.map(s => ({ id: s.id, name: s.name }))} />
         {tabName === 'mine' ? <MyRequests requests={myRequests} notes={(notes.data || []) as MyNote[]} />
           : tabName === 'spaces' ? <MySpaces spaces={mySpaces} current={space} />

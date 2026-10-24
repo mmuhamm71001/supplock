@@ -2,15 +2,18 @@
 import { useState, useTransition, type CSSProperties, type FormEvent } from 'react';
 import { ErrorText } from '@/components/form';
 import { LEVEL, fmtDate, isoPlus, level } from '@/lib/format';
-import { requestCustom, requestLaptop, requestSupply } from './actions';
+import { requestBorrow, requestCustom, requestLaptop, requestSupply } from './actions';
 
-export type CatalogItem = { id: string; name: string; category: string; unit: string; qty: number; low_threshold: number; icon: string | null };
+export type CatalogItem = { id: string; name: string; category: string; unit: string; qty: number; low_threshold: number; icon: string | null; lendable: boolean; back_on: string | null };
 export type ModalMode = { kind: 'supply'; item: CatalogItem } | { kind: 'custom' } | { kind: 'laptop' };
 
 const field: CSSProperties = { height: 48, border: '2px solid #e6dbef', borderRadius: 14, padding: '0 14px', font: 'inherit', fontWeight: 400, fontSize: 16, background: '#fff', color: '#2e0f38', width: '100%' };
 const dateField: CSSProperties = { ...field, padding: '0 10px', fontFamily: 'var(--font-mono)', fontSize: 14 };
 const label: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14, fontWeight: 700 };
 const hint: CSSProperties = { fontWeight: 400, color: '#5c4766', fontSize: 13 };
+// How long a teacher can borrow something for, in days from today.
+const SPANS: [string, number][] = [['Today', 0], ['Tomorrow', 1], ['3 days', 3], ['1 week', 7], ['2 weeks', 14]];
+
 const step: CSSProperties = { width: 52, height: 52, border: 'none', borderRadius: 14, background: '#fff', fontSize: 24, fontWeight: 700, cursor: 'pointer', color: '#2e0f38' };
 
 export function RequestModal({ mode, room, laptopsFree, onClose }: { mode: ModalMode; room: string; laptopsFree: number; onClose: () => void }) {
@@ -18,10 +21,12 @@ export function RequestModal({ mode, room, laptopsFree, onClose }: { mode: Modal
   const [type, setType] = useState<'temp' | 'full'>('temp');
   const [roomVal, setRoomVal] = useState(room);
   const [dates] = useState(() => ({ from: isoPlus(1), to: isoPlus(3) }));
+  const [until, setUntil] = useState(() => isoPlus(1));
   const [err, setErr] = useState('');
   const [sent, setSent] = useState('');
   const [pending, start] = useTransition();
   const it = mode.kind === 'supply' ? mode.item : null;
+  const borrow = !!it?.lendable;
   const isLaptop = mode.kind === 'laptop';
   const showQty = !isLaptop || type === 'temp';
   const roomRequired = isLaptop && type === 'full';
@@ -35,21 +40,24 @@ export function RequestModal({ mode, room, laptopsFree, onClose }: { mode: Modal
     if (mode.kind === 'custom' && !name) return setErr('Add the item name.');
     if (roomRequired && !r) return setErr('Classroom is required for full-time class use.');
     if (isLaptop && type === 'temp' && (!f.get('from') || !f.get('to'))) return setErr('Pick the checkout dates.');
+    if (borrow && !until) return setErr("Pick when you'll bring it back.");
     setErr('');
     start(async () => {
       let res;
-      if (it) { f.set('item', it.id); res = await requestSupply(f); }
+      if (it) { f.set('item', it.id); f.set('until', until); res = await (borrow ? requestBorrow(f) : requestSupply(f)); }
       else if (mode.kind === 'custom') res = await requestCustom(f);
       else { f.set('type', type); res = await requestLaptop(f); }
       if (res.error) return setErr(res.error);
-      setSent(it ? `${qty} ${it.unit} of ${it.name}. You'll get a notice when it's approved.`
+      setSent(it && borrow ? `${qty} ${it.unit} of ${it.name}, back by ${fmtDate(until)}. You'll get a notice when it's approved.`
+        : it ? `${qty} ${it.unit} of ${it.name}. You'll get a notice when it's approved.`
         : mode.kind === 'custom' ? `${name} × ${qty}, marked as a custom request.`
           : type === 'full' ? `1 laptop for ${r}, full-time.` : `${qty} laptops, ${fmtDate(String(f.get('from')))} – ${fmtDate(String(f.get('to')))}.`);
     });
   };
 
   const title = it ? it.name : mode.kind === 'custom' ? 'Request something not listed' : 'Request laptops';
-  const sub = it ? LEVEL[level(it)].label + ' · counted in ' + it.unit
+  const sub = it && borrow ? (it.qty > 0 ? `To borrow and bring back · ${it.qty} on the shelf` : `To borrow and bring back · all borrowed${it.back_on ? ', next one back ' + fmtDate(it.back_on) : ''}`)
+    : it ? LEVEL[level(it)].label + ' · counted in ' + it.unit
     : mode.kind === 'custom' ? 'The office will order it for you' : `${laptopsFree} ${laptopsFree === 1 ? 'laptop' : 'laptops'} available right now`;
   const seg = (on: boolean): CSSProperties => ({ minHeight: 44, border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 14, cursor: 'pointer', background: on ? '#2e0f38' : 'transparent', color: on ? '#fff' : '#2e0f38' });
 
@@ -110,7 +118,23 @@ export function RequestModal({ mode, room, laptopsFree, onClose }: { mode: Modal
 
             {it && qty > it.qty && (
               <div style={{ fontSize: 14, color: '#6e2c74', background: '#f1dff3', padding: '10px 12px', borderRadius: 12 }}>
-                Only {it.qty} available right now. You can still send it; the office will review.
+                {borrow ? `Only ${it.qty} on the shelf right now. You can still ask; the office will let you know.` : `Only ${it.qty} available right now. You can still send it; the office will review.`}
+              </div>
+            )}
+
+            {borrow && (
+              <div role="group" aria-labelledby="until-h" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div id="until-h" style={{ fontSize: 14, fontWeight: 700 }}>How long do you need it?</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {SPANS.map(([name, days]) => {
+                    const on = until === isoPlus(days);
+                    return <button key={name} type="button" aria-pressed={on} onClick={() => { setUntil(isoPlus(days)); setErr(''); }}
+                      style={{ ...seg(on), padding: '0 14px', border: `2px solid ${on ? '#2e0f38' : '#e6dbef'}`, background: on ? '#2e0f38' : '#fff' }}>{name}</button>;
+                  })}
+                </div>
+                <label style={label}>Bring it back by
+                  <input name="until" type="date" value={until} min={isoPlus(0)} max={isoPlus(183)} onChange={e => setUntil(e.target.value)} style={dateField} />
+                </label>
               </div>
             )}
 
@@ -142,7 +166,7 @@ export function RequestModal({ mode, room, laptopsFree, onClose }: { mode: Modal
             </label>
             <ErrorText>{err}</ErrorText>
             <button type="submit" disabled={pending} style={{ height: 58, border: 'none', borderRadius: 18, background: '#8351a8', color: '#fff', fontWeight: 700, fontSize: 18, cursor: 'pointer', boxShadow: '0 5px 0 #5e3680', opacity: pending ? 0.7 : 1 }}>
-              {pending ? 'Sending…' : 'Send request'}
+              {pending ? 'Sending…' : borrow ? 'Ask to borrow' : 'Send request'}
             </button>
           </>
         )}

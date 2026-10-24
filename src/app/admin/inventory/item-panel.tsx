@@ -6,7 +6,7 @@ import { saveItem } from './actions';
 
 export type Item = {
   id: string; name: string; category: string; unit: string; qty: number; low_threshold: number; vendor: string; url: string;
-  pack_name: string; pack_size: number; price: number; icon: string | null;
+  pack_name: string; pack_size: number; price: number; icon: string | null; lendable: boolean;
 };
 
 declare global {
@@ -28,7 +28,7 @@ const FIELDS: { key: keyof Item; label: string; hint?: string; type: 'text' | 'n
   { key: 'price', label: 'Price per base unit ($)', type: 'number', step: '0.01' }
 ];
 
-export const BLANK: Omit<Item, 'id'> & { id: string } = { id: '', name: '', category: '', unit: 'each', qty: 0, low_threshold: 5, vendor: '', url: '', pack_name: 'each', pack_size: 1, price: 0, icon: null };
+export const BLANK: Omit<Item, 'id'> & { id: string } = { id: '', name: '', category: '', unit: 'each', qty: 0, low_threshold: 5, vendor: '', url: '', pack_name: 'each', pack_size: 1, price: 0, icon: null, lendable: false };
 
 const input: CSSProperties = { height: 46, border: '2px solid #e6dbef', borderRadius: 12, padding: '0 12px', fontWeight: 400, fontSize: 15, font: 'inherit', color: '#2e0f38', background: '#fff' };
 
@@ -46,6 +46,7 @@ export function ItemPanel({ item, onClose }: { item: Item; onClose: () => void }
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     fd.set('id', f.id);
+    fd.set('lendable', f.lendable ? '1' : '');
     fd.set('icon', picked ? (f.icon || '') : (auto === 'box' ? '' : auto));
     if (!String(fd.get('name')).trim()) return setErr('Add the item name.');
     setErr('');
@@ -69,6 +70,12 @@ export function ItemPanel({ item, onClose }: { item: Item; onClose: () => void }
               autoFocus={fd.key === 'name' && !f.id} value={String(f[fd.key] ?? '')} onChange={set(fd.key)} style={input} />
           </label>
         ))}
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, fontWeight: 700, background: '#f1eaf5', borderRadius: 12, padding: '12px 12px', cursor: 'pointer' }}>
+          <input type="checkbox" checked={f.lendable} onChange={e => { const on = e.target.checked; setF(x => ({ ...x, lendable: on, ...(on && !x.id && Number(x.low_threshold) === BLANK.low_threshold ? { low_threshold: 0 } : {}) })); }} style={{ width: 22, height: 22, margin: 0, flex: 'none', accentColor: '#8351a8' }} />
+          <span>Lend it out
+            <span style={{ display: 'block', fontWeight: 400, fontSize: 13, color: '#5c4766', marginTop: 2 }}>For things that come back, like a glue gun. Teachers borrow it, pick a return date, and mark it when they give it back.</span>
+          </span>
+        </label>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 14, fontWeight: 700 }}>
             Icon<span style={{ fontWeight: 400, fontSize: 13, color: '#5c4766' }}>{picked ? 'tap to change' : 'auto-suggested from the name'}</span>

@@ -50,7 +50,7 @@ export async function renameSchool(name: string): Promise<Result> {
 
 // Approvals ------------------------------------------------------------------------
 // The database explains problems in plain words (e.g. not enough laptops); show those, hide anything technical.
-const FRIENDLY = /already handled|no longer exist|removed from the inventory|available|Pick|always 1|Only/;
+const FRIENDLY = /already handled|no longer exist|removed from the inventory|available|Pick|always 1|Only|already given back|isn't something/;
 async function decide(fn: string, args: Record<string, unknown>): Promise<Result> {
   const { error } = await (await createClient()).rpc(fn, args);
   refresh();
@@ -79,6 +79,11 @@ export async function markReceived(id: string) {
 export async function changeEta(id: string, eta: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(eta)) return { error: 'Pick the expected arrival date.' };
   return decide('custom_set_eta', { p_id: id, p_eta: eta });
+}
+
+// Borrowed things: the office can mark one given back too.
+export async function returnBorrowed(id: string) {
+  return decide('return_borrowed', { p_id: id });
 }
 
 // Notices from teachers -------------------------------------------------------------

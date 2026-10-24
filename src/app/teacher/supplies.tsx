@@ -1,6 +1,6 @@
 'use client';
 import { useState, type CSSProperties } from 'react';
-import { LEVEL, level } from '@/lib/format';
+import { LEVEL, fmtDate, level } from '@/lib/format';
 import { NoticeModal } from './notice-modal';
 import { RequestModal, type CatalogItem, type ModalMode } from './request-modal';
 import { Icon } from '@/components/icon';
@@ -51,7 +51,9 @@ export function Supplies({ items, room, laptopsFree }: { items: CatalogItem[]; r
       <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {shown.map(i => {
           const lv = level(i);
-          const L = LEVEL[lv === 'critical' ? 'low' : lv];
+          const L = i.lendable
+            ? (i.qty > 0 ? { label: 'Borrow & return', fg: '#2f4f60', bg: '#dce8ee' } : { label: i.back_on ? 'Borrowed · back ' + fmtDate(i.back_on) : 'All borrowed', fg: '#6e2c74', bg: '#f1dff3' })
+            : LEVEL[lv === 'critical' ? 'low' : lv];
           return (
             <li key={i.id} style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#fff', borderRadius: 22, padding: '10px 12px', border: '2px solid #efe7f3', flexWrap: 'wrap' }}>
               <Icon name={i.icon} label={i.name} size={56} />
@@ -60,8 +62,8 @@ export function Supplies({ items, room, laptopsFree }: { items: CatalogItem[]; r
                 <div style={{ fontSize: 14, color: '#5c4766' }}>{i.category}</div>
               </div>
               <span style={{ flex: 'none', fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 999, color: L.fg, background: L.bg }}>{L.label}</span>
-              <button onClick={() => setModal({ kind: 'supply', item: i })} aria-label={`Request ${i.name}`}
-                style={{ flex: 'none', minWidth: 130, height: 56, border: 'none', borderRadius: 18, background: '#8351a8', color: '#fff', fontWeight: 700, fontSize: 18, cursor: 'pointer', boxShadow: '0 5px 0 #5e3680' }}>Request</button>
+              <button onClick={() => setModal({ kind: 'supply', item: i })} aria-label={`${i.lendable ? 'Borrow' : 'Request'} ${i.name}`}
+                style={{ flex: 'none', minWidth: 130, height: 56, border: 'none', borderRadius: 18, background: '#8351a8', color: '#fff', fontWeight: 700, fontSize: 18, cursor: 'pointer', boxShadow: '0 5px 0 #5e3680' }}>{i.lendable ? 'Borrow' : 'Request'}</button>
             </li>
           );
         })}
